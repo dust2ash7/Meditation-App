@@ -1,0 +1,20 @@
+{
+    "short_name": "Med Timer",
+    "name": "Simple Meditation Timer",
+    "icons": [
+        {
+            "src": "https://via.placeholder.com/192?text=MT", // Replace with your icon URL if desired
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "https://via.placeholder.com/512?text=MT",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#4CAF50",
+    "background_color": "#ffffff"
+}
