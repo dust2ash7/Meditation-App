@@ -7,24 +7,24 @@ const bell = document.getElementById('bell');
 const bgMusic = document.getElementById('bgMusic');
 const musicToggle = document.getElementById('musicToggle');
 
-let musicEnabled = true;  // Default on
+let musicEnabled = true; // Default on
 
 // Toggle music on/off
 if (musicToggle) {
     musicToggle.addEventListener('click', () => {
         musicEnabled = !musicEnabled;
         musicToggle.textContent = `Music: ${musicEnabled ? 'On' : 'Off'}`;
-        if (!musicEnabled) {
+        if (!musicEnabled && bgMusic) {
             bgMusic.pause();
-        } else if (!startBtn.disabled) {  // Only attempt play if timer is active
-            bgMusic.play().catch(e => console.log("Music play prevented:", e));
+        } else if (musicEnabled && bgMusic && !startBtn.disabled) {
+            bgMusic.play().catch(e => console.log("Music play prevented (likely autoplay policy):", e));
         }
     });
 }
 
-// Start button: Start timer + music
+// Start button: timer + music
 startBtn.addEventListener('click', () => {
-    let time = parseInt(minutesInput ? minutesInput.value : 10) * 60;  // Fallback to 10 min
+    let time = parseInt(minutesInput.value) * 60;
     if (isNaN(time) || time < 60 || time > 3600) {
         alert('Enter 1-60 minutes.');
         return;
@@ -33,9 +33,13 @@ startBtn.addEventListener('click', () => {
     startBtn.disabled = true;
     stopBtn.disabled = false;
 
-    // Start background music if enabled (user interaction allows it)
+    // Try to play music (user clicked Start, so allowed)
     if (musicEnabled && bgMusic) {
-        bgMusic.play().catch(e => console.log("Autoplay blocked:", e));
+        bgMusic.play().catch(e => {
+            console.log("Autoplay blocked - may need another interaction:", e);
+            // Optional: alert user if blocked
+            // alert("Click again or enable music manually - browser policy.");
+        });
     }
 
     timerInterval = setInterval(() => {
@@ -53,7 +57,7 @@ startBtn.addEventListener('click', () => {
     }, 1000);
 });
 
-// Stop button: Stop timer + music
+// Stop button
 stopBtn.addEventListener('click', () => {
     clearInterval(timerInterval);
     if (bgMusic) bgMusic.pause();
@@ -66,18 +70,18 @@ function resetButtons() {
     stopBtn.disabled = true;
 }
 
-// Pause/resume music on tab visibility change (battery + UX)
+// Pause music when tab is hidden (saves battery)
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        if (bgMusic) bgMusic.pause();
-    } else if (musicEnabled && bgMusic && !startBtn.disabled) {
+    if (document.hidden && bgMusic) {
+        bgMusic.pause();
+    } else if (!document.hidden && musicEnabled && bgMusic && !startBtn.disabled) {
         bgMusic.play().catch(() => {});
     }
 });
 
-// Register service worker for PWA (only once)
+// PWA service worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registered', reg))
-        .catch(err => console.log('Service Worker registration failed', err));
+        .then(reg => console.log('Service Worker registered'))
+        .catch(err => console.log('Service Worker failed:', err));
 }
