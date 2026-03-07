@@ -20,6 +20,11 @@ h1 {
     color: #4CAF50;
 }
 
+a[href^="https://www.buymeacoffee.com"] {
+    display: block;
+    margin: 20px auto;
+}
+
 input {
     width: 80px;
     padding: 10px;
