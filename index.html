@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Meditation Timer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+</head>
+<body>
+    <div class="container">
+        <h1>Meditation Timer</h1>
+        <p>Set your session time and relax.</p>
+        <input type="number" id="minutes" min="1" max="60" value="10" placeholder="Minutes (1-60)">
+        <button id="startBtn">Start</button>
+        <button id="stopBtn" disabled>Stop</button>
+        <div id="timer">10:00</div>
+        <audio id="bell" src="https://www.soundjay.com/buttons/bell-sound.mp3"></audio> <!-- Free public sound -->
+    </div>
+    <script src="script.js"></script>
+    <script src="sw.js"></script>
+</body>
+</html>
