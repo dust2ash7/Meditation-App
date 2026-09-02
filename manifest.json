@@ -10,15 +10,16 @@
   "background_color": "#080a09",
   "theme_color": "#080a09",
   "lang": "en",
+  "categories": ["health", "lifestyle"],
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "icon.svg",
+      "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"

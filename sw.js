@@ -1,4 +1,4 @@
-const CACHE = "stillpoint-v1";
+const CACHE = "stillpoint-v2";
 const SHELL = [
   "./",
   "./index.html",
@@ -7,19 +7,17 @@ const SHELL = [
   "./manifest.json",
   "./icon.svg"
 ];
-const AUDIO = [
-  "./nastelbom-meditation.mp3",
-  "./nastelbom-meditation.mp3.mp3"
-];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE);
       await cache.addAll(SHELL);
-      await Promise.all(
-        AUDIO.map((url) => cache.add(url).catch(() => undefined))
-      );
+      try {
+        await cache.add("./nastelbom-meditation.mp3");
+      } catch (err) {
+        // Audio is optional for the shell; the app still runs offline-ish.
+      }
       self.skipWaiting();
     })()
   );
@@ -47,7 +45,11 @@ self.addEventListener("fetch", (event) => {
       if (cached) return cached;
       try {
         const response = await fetch(request);
-        if (response && response.ok && new URL(request.url).origin === self.location.origin) {
+        if (
+          response &&
+          response.ok &&
+          new URL(request.url).origin === self.location.origin
+        ) {
           const cache = await caches.open(CACHE);
           cache.put(request, response.clone());
         }
