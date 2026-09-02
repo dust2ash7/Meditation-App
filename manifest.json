@@ -1,20 +1,27 @@
 {
-    "short_name": "Med Timer",
-    "name": "Simple Meditation Timer",
-    "icons": [
-        {
-            "src": "https://via.placeholder.com/192?text=MT", // Replace with your icon URL if desired
-            "type": "image/png",
-            "sizes": "192x192"
-        },
-        {
-            "src": "https://via.placeholder.com/512?text=MT",
-            "type": "image/png",
-            "sizes": "512x512"
-        }
-    ],
-    "start_url": ".",
-    "display": "standalone",
-    "theme_color": "#4CAF50",
-    "background_color": "#ffffff"
+  "id": "./",
+  "name": "Stillpoint",
+  "short_name": "Stillpoint",
+  "description": "A quiet, cinematic meditation space with timed sits, box breathing, and wind-down.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080a09",
+  "theme_color": "#080a09",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
 }

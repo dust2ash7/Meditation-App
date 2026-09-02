@@ -1,21 +1,64 @@
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open('meditation-app-v1').then((cache) => {
-            return cache.addAll([
-                '/',
-                '/index.html',
-                '/style.css',
-                '/script.js',
-                '/manifest.json'
-            ]);
-        })
-    );
+const CACHE = "stillpoint-v1";
+const SHELL = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./manifest.json",
+  "./icon.svg"
+];
+const AUDIO = [
+  "./nastelbom-meditation.mp3",
+  "./nastelbom-meditation.mp3.mp3"
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    (async () => {
+      const cache = await caches.open(CACHE);
+      await cache.addAll(SHELL);
+      await Promise.all(
+        AUDIO.map((url) => cache.add(url).catch(() => undefined))
+      );
+      self.skipWaiting();
+    })()
+  );
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))
+      );
+      self.clients.claim();
+    })()
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  event.respondWith(
+    (async () => {
+      const cached = await caches.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      try {
+        const response = await fetch(request);
+        if (response && response.ok && new URL(request.url).origin === self.location.origin) {
+          const cache = await caches.open(CACHE);
+          cache.put(request, response.clone());
+        }
+        return response;
+      } catch (err) {
+        if (request.mode === "navigate") {
+          const fallback = await caches.match("./index.html");
+          if (fallback) return fallback;
+        }
+        throw err;
+      }
+    })()
+  );
 });

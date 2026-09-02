@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Stillpoint">
+  <rect width="512" height="512" rx="96" fill="#080a09"/>
+  <circle cx="256" cy="256" r="168" fill="#1c221c"/>
+  <circle cx="256" cy="256" r="118" fill="url(#orb)"/>
+  <defs>
+    <radialGradient id="orb" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#f0e6cc"/>
+      <stop offset="42%" stop-color="#c4b48a"/>
+      <stop offset="100%" stop-color="#3e4a3c"/>
+    </radialGradient>
+  </defs>
+</svg>
