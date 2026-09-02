@@ -1,40 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Meditation Timer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4CAF50">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080a09">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Stillpoint is a quiet, cinematic meditation space — timed sits, box breathing, and wind-down, with an ambient soundscape.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stillpoint">
+  <title>Stillpoint — Meditation</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Meditation Timer</h1>
-        <p>Set your session time and relax.</p>
-        <input type="number" id="minutes" min="1" max="60" value="10" placeholder="Minutes (1-60)">
-        <button id="startBtn">Start</button>
-        <button id="stopBtn" disabled>Stop</button>
-        <div id="timer">10:00</div>
-        <audio id="bell" src="https://www.soundjay.com/buttons/bell-sound.mp3"></audio> <!-- Free public sound -->
-        <!-- Existing bell audio -->
-<audio id="bell" src="https://www.soundjay.com/buttons/bell-sound.mp3"></audio>
+  <a class="skip-link" href="#app">Skip to content</a>
 
-<!-- New: Background music (looping) -->
-<audio id="bgMusic" loop>
-    <source src="https://github.com/dust2ash7/Meditation-App/blob/main/nastelbom-meditation.mp3.mp3" type="audio/mpeg">  <!-- Change to your file name or full URL -->
-    Your browser does not support the audio element.
-</audio>
+  <div class="atmosphere" aria-hidden="true">
+    <div class="glow glow-a"></div>
+    <div class="glow glow-b"></div>
+    <div class="glow glow-c"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+  </div>
 
-<!-- Music toggle button (optional but recommended) -->
-<button id="musicToggle">Music: On</button>
+  <div id="app" class="app">
+    <header class="topbar">
+      <p class="brand" id="brand-label">Stillpoint</p>
+      <div class="topbar-actions">
+        <button type="button" class="icon-btn" id="mute-btn" aria-pressed="false" aria-label="Mute sounds">
+          <span class="icon-mute" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="text-btn" id="history-btn" aria-controls="history-sheet" aria-expanded="false">History</button>
+      </div>
+    </header>
 
-        <!-- Add Buy Me a Coffee Button Here -->
-<a href="https://www.buymeacoffee.com/nrsteward" target="_blank">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me a Coffee" style="height: 60px !important; width: 217px !important;">
-</a>
+    <main>
+      <section id="view-home" class="view view-home" data-view="home">
+        <div class="home-hero">
+          <p class="eyebrow">A quiet room for the mind</p>
+          <h1>Settle into<br><em>stillness.</em></h1>
+          <p class="lede">Cinematic sits with a living breath guide and a looping soundscape. No accounts. Nothing to buy. Just time, held gently.</p>
+        </div>
+
+        <fieldset class="chooser">
+          <legend>Practice</legend>
+          <div class="type-grid" role="radiogroup" aria-label="Session type">
+            <label class="type-card">
+              <input type="radio" name="session-type" value="sit" checked>
+              <span class="type-name">Timed sit</span>
+              <span class="type-copy">Settle and watch the breath. Time passes without asking anything of you.</span>
+            </label>
+            <label class="type-card">
+              <input type="radio" name="session-type" value="box">
+              <span class="type-name">Box breathing</span>
+              <span class="type-copy">Four counts in each direction — a square of calm for a restless nervous system.</span>
+            </label>
+            <label class="type-card">
+              <input type="radio" name="session-type" value="wind">
+              <span class="type-name">Wind-down</span>
+              <span class="type-copy">A slower 4–7–8 cadence for the edge of sleep, or the end of a long day.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="chooser">
+          <legend>Length</legend>
+          <div class="duration-row" role="radiogroup" aria-label="Session length">
+            <label class="chip">
+              <input type="radio" name="duration" value="5">
+              <span>5 min</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="duration" value="10" checked>
+              <span>10 min</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="duration" value="15">
+              <span>15 min</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="duration" value="20">
+              <span>20 min</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="duration" value="0">
+              <span>Open</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <button type="button" class="primary-btn" id="begin-btn">Begin</button>
+
+        <dl class="home-stats" aria-label="Your practice">
+          <div>
+            <dt>Streak</dt>
+            <dd id="stat-streak">0 days</dd>
+          </div>
+          <div>
+            <dt>Total</dt>
+            <dd id="stat-total">0 min</dd>
+          </div>
+          <div>
+            <dt>Sits</dt>
+            <dd id="stat-count">0</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="view-session" class="view view-session" data-view="session" hidden>
+        <p class="session-kicker" id="session-kicker">Timed sit</p>
+        <p class="timer" id="timer" role="timer" aria-live="off">10:00</p>
+        <p class="sr-only" id="timer-live" aria-live="polite" aria-atomic="true"></p>
+
+        <div class="orb-stage">
+          <div class="orb-halo" aria-hidden="true"></div>
+          <div class="orb" id="orb" aria-hidden="true">
+            <div class="orb-core"></div>
+            <div class="orb-ring"></div>
+          </div>
+        </div>
+
+        <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Breathe in</p>
+        <p class="session-hint" id="session-hint">Follow the light</p>
+
+        <div class="session-controls">
+          <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
+          <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
+          <button type="button" class="ghost-btn danger" id="end-btn">End</button>
+        </div>
+      </section>
+
+      <section id="view-complete" class="view view-complete" data-view="complete" hidden>
+        <p class="eyebrow">The sitting is complete</p>
+        <h2 id="complete-title">Well held.</h2>
+        <p class="complete-meta" id="complete-meta">10 minutes · Timed sit</p>
+        <p class="complete-streak" id="complete-streak"></p>
+        <button type="button" class="primary-btn" id="home-btn">Return home</button>
+      </section>
+    </main>
+  </div>
+
+  <div id="history-sheet" class="sheet" hidden role="dialog" aria-labelledby="history-title" aria-modal="true">
+    <div class="sheet-backdrop" data-close-history></div>
+    <div class="sheet-panel">
+      <div class="sheet-head">
+        <h2 id="history-title">Practice log</h2>
+        <button type="button" class="icon-btn" id="history-close" aria-label="Close history">&times;</button>
+      </div>
+      <dl class="history-summary">
+        <div>
+          <dt>Current streak</dt>
+          <dd id="hist-streak">0 days</dd>
+        </div>
+        <div>
+          <dt>Total minutes</dt>
+          <dd id="hist-total">0</dd>
+        </div>
+      </dl>
+      <ol class="history-list" id="history-list"></ol>
+      <p class="history-empty" id="history-empty">No sittings yet. Begin when you are ready.</p>
     </div>
-    <script src="script.js"></script>
-    <script src="sw.js"></script>
+  </div>
+
+  <audio id="soundscape" loop preload="auto"></audio>
+  <script src="script.js" defer></script>
 </body>
 </html>
