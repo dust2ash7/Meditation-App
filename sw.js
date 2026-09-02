@@ -14,7 +14,7 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(CACHE);
       await cache.addAll(SHELL);
       try {
-        await cache.add("./nastelbom-meditation.mp3");
+        await cache.add("./nastelbom-meditation.mp3.mp3");
       } catch (err) {
         // Audio is optional for the shell; the app still runs offline-ish.
       }

@@ -2,7 +2,9 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  const AUDIO_SRC = "./nastelbom-meditation.mp3";
+  const AUDIO_SRC = "./nastelbom-meditation.mp3.mp3";
+  const MUSIC_VOL = 0.32;
+  const BELL_VOL = 0.72;
   const MIN_LOG_SECONDS = 15;
 
   const TYPES = {
@@ -91,6 +93,7 @@
     phaseIndex: 0,
     phaseEndsAt: 0,
     hiddenWhileRunning: false,
+    sessionActive: false,
     installEvent: null
   };
 
@@ -224,27 +227,27 @@
     }
   }
 
-  function playChime(kind) {
+  function playEndBell() {
     if (state.muted) return;
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
-    const ctx = playChime.ctx || new AudioCtx();
-    playChime.ctx = ctx;
+    const ctx = playEndBell.ctx || new AudioCtx();
+    playEndBell.ctx = ctx;
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
     const now = ctx.currentTime;
-    const freqs = kind === "start" ? [392, 523] : [523, 392, 330];
+    const freqs = [528, 792, 1056];
     freqs.forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
       osc.frequency.value = freq;
       gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.045, now + 0.02 + i * 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1 + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(BELL_VOL / freqs.length, now + 0.03 + i * 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.start(now + i * 0.12);
-      osc.stop(now + 1.4 + i * 0.18);
+      osc.start(now);
+      osc.stop(now + 2.25);
     });
   }
 
@@ -254,19 +257,22 @@
     }
     els.soundscape.loop = true;
     els.soundscape.muted = state.muted;
+    els.soundscape.volume = MUSIC_VOL;
   }
 
-  function startAudioFromGesture() {
+  function startAudioFromGesture(reset) {
     ensureAudioReady();
     if (!state.musicEnabled) return;
+    if (reset) els.soundscape.currentTime = 0;
     const play = els.soundscape.play();
     if (play && typeof play.catch === "function") {
       play.catch(() => {});
     }
   }
 
-  function pauseAudio() {
+  function pauseAudio(reset) {
     els.soundscape.pause();
+    if (reset) els.soundscape.currentTime = 0;
   }
 
   function setPhase(index) {
@@ -340,6 +346,7 @@
     state.phaseIndex = 0;
     state.status = "running";
     state.hiddenWhileRunning = false;
+    state.sessionActive = true;
     document.body.classList.add("is-running");
     els.kicker.textContent = TYPES[state.type].label;
     els.hint.textContent = TYPES[state.type].hint;
@@ -350,8 +357,7 @@
     setView("session");
     setPhase(0);
     schedulePhases();
-    playChime("start");
-    startAudioFromGesture();
+    startAudioFromGesture(true);
     startTicking();
   }
 
@@ -359,7 +365,7 @@
     if (state.status !== "running") return;
     state.status = "paused";
     clearTimers();
-    pauseAudio();
+    pauseAudio(false);
     document.body.classList.remove("is-running");
     els.pause.textContent = "Resume";
     els.pause.setAttribute("aria-pressed", "true");
@@ -374,7 +380,7 @@
     els.pause.setAttribute("aria-pressed", "false");
     renderTimerNow();
     schedulePhases();
-    startAudioFromGesture();
+    startAudioFromGesture(false);
     startTicking();
   }
 
@@ -387,8 +393,8 @@
   function stopSession() {
     const elapsed = state.elapsed;
     clearTimers();
-    pauseAudio();
-    els.soundscape.currentTime = 0;
+    state.sessionActive = false;
+    pauseAudio(true);
     document.body.classList.remove(
       "is-running", "is-sit", "is-box", "is-wind",
       "phase-inhale", "phase-exhale", "phase-hold-in", "phase-hold-out"
@@ -420,11 +426,11 @@
   function completeSession(natural) {
     const elapsed = state.elapsed;
     clearTimers();
-    pauseAudio();
-    els.soundscape.currentTime = 0;
+    state.sessionActive = false;
+    pauseAudio(true);
     state.status = "complete";
     document.body.classList.remove("is-running");
-    playChime("end");
+    if (natural) playEndBell();
     const minutes = state.isOpen
       ? Math.max(1, Math.round(elapsed / 60) || (elapsed > 0 ? 1 : 0))
       : state.durationMinutes;
@@ -457,11 +463,11 @@
     saveStore({ musicEnabled: state.musicEnabled });
     syncMusicButtons();
     if (!state.musicEnabled) {
-      pauseAudio();
+      pauseAudio(false);
       return;
     }
-    if (state.status === "running" || state.status === "paused") {
-      startAudioFromGesture();
+    if (state.sessionActive) {
+      startAudioFromGesture(false);
     }
   }
 
@@ -494,6 +500,9 @@
     if (state.hiddenWhileRunning && state.status === "paused") {
       state.hiddenWhileRunning = false;
       resumeSession();
+    }
+    if (state.sessionActive && state.musicEnabled && !state.muted) {
+      startAudioFromGesture(false);
     }
   }
 
