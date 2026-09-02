@@ -5,22 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#080a09">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Stillpoint is a quiet, cinematic meditation space — timed sits, box breathing, and wind-down, with an ambient soundscape.">
+  <meta name="description" content="Stillpoint is a quiet, cinematic meditation space — timed sits, box breathing, and wind-down, with a looping soundscape. Free, no accounts, no paywall.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Stillpoint">
   <title>Stillpoint — Meditation</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
-
   <div class="atmosphere" aria-hidden="true">
     <div class="glow glow-a"></div>
     <div class="glow glow-b"></div>
@@ -28,18 +27,17 @@
     <div class="vignette"></div>
     <div class="grain"></div>
   </div>
-
   <div id="app" class="app">
     <header class="topbar">
       <p class="brand" id="brand-label">Stillpoint</p>
       <div class="topbar-actions">
-        <button type="button" class="icon-btn" id="mute-btn" aria-pressed="false" aria-label="Mute sounds">
+        <button type="button" class="text-btn" id="install-btn" hidden>Install</button>
+        <button type="button" class="icon-btn" id="mute-btn" aria-pressed="false" aria-label="Mute">
           <span class="icon-mute" aria-hidden="true"></span>
         </button>
         <button type="button" class="text-btn" id="history-btn" aria-controls="history-sheet" aria-expanded="false">History</button>
       </div>
     </header>
-
     <main>
       <section id="view-home" class="view view-home" data-view="home">
         <div class="home-hero">
@@ -47,7 +45,6 @@
           <h1>Settle into<br><em>stillness.</em></h1>
           <p class="lede">Cinematic sits with a living breath guide and a looping soundscape. No accounts. Nothing to buy. Just time, held gently.</p>
         </div>
-
         <fieldset class="chooser">
           <legend>Practice</legend>
           <div class="type-grid" role="radiogroup" aria-label="Session type">
@@ -59,7 +56,7 @@
             <label class="type-card">
               <input type="radio" name="session-type" value="box">
               <span class="type-name">Box breathing</span>
-              <span class="type-copy">Four counts in each direction — a square of calm for a restless nervous system.</span>
+              <span class="type-copy">Four counts in each direction — inhale, hold, exhale, hold.</span>
             </label>
             <label class="type-card">
               <input type="radio" name="session-type" value="wind">
@@ -68,74 +65,44 @@
             </label>
           </div>
         </fieldset>
-
         <fieldset class="chooser">
           <legend>Length</legend>
           <div class="duration-row" role="radiogroup" aria-label="Session length">
-            <label class="chip">
-              <input type="radio" name="duration" value="5">
-              <span>5 min</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="duration" value="10" checked>
-              <span>10 min</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="duration" value="15">
-              <span>15 min</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="duration" value="20">
-              <span>20 min</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="duration" value="0">
-              <span>Open</span>
-            </label>
+            <label class="chip"><input type="radio" name="duration" value="5"><span>5 min</span></label>
+            <label class="chip"><input type="radio" name="duration" value="10" checked><span>10 min</span></label>
+            <label class="chip"><input type="radio" name="duration" value="15"><span>15 min</span></label>
+            <label class="chip"><input type="radio" name="duration" value="20"><span>20 min</span></label>
+            <label class="chip"><input type="radio" name="duration" value="0"><span>Open</span></label>
           </div>
+          <label class="custom-mins" for="custom-minutes">
+            <span>Or minutes</span>
+            <input type="number" id="custom-minutes" min="1" max="180" inputmode="numeric" placeholder="—" aria-describedby="custom-hint">
+          </label>
+          <p class="hint" id="custom-hint">Leave blank to use the chips. Open counts up until you end.</p>
         </fieldset>
-
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
-
         <dl class="home-stats" aria-label="Your practice">
-          <div>
-            <dt>Streak</dt>
-            <dd id="stat-streak">0 days</dd>
-          </div>
-          <div>
-            <dt>Total</dt>
-            <dd id="stat-total">0 min</dd>
-          </div>
-          <div>
-            <dt>Sits</dt>
-            <dd id="stat-count">0</dd>
-          </div>
+          <div><dt>Streak</dt><dd id="stat-streak">0 days</dd></div>
+          <div><dt>Total</dt><dd id="stat-total">0 min</dd></div>
+          <div><dt>Sits</dt><dd id="stat-count">0</dd></div>
         </dl>
       </section>
-
       <section id="view-session" class="view view-session" data-view="session" hidden>
         <p class="session-kicker" id="session-kicker">Timed sit</p>
-        <p class="timer" id="timer" role="timer" aria-live="off">10:00</p>
+        <p class="timer" id="timer-display" role="timer">10:00</p>
         <p class="sr-only" id="timer-live" aria-live="polite" aria-atomic="true"></p>
-
         <div class="orb-stage">
           <div class="orb-halo" aria-hidden="true"></div>
-          <div class="orb" id="orb" aria-hidden="true">
-            <div class="orb-core"></div>
-            <div class="orb-ring"></div>
-          </div>
+          <div class="orb" id="orb" aria-hidden="true"><div class="orb-core"></div><div class="orb-ring"></div></div>
         </div>
-
-        <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Breathe in</p>
+        <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Settle</p>
         <p class="session-hint" id="session-hint">Follow the light</p>
-
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
           <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
-          <button type="button" class="ghost-btn danger" id="end-btn">End</button>
+          <button type="button" class="ghost-btn danger" id="stop-btn">Stop</button>
         </div>
       </section>
-
       <section id="view-complete" class="view view-complete" data-view="complete" hidden>
         <p class="eyebrow">The sitting is complete</p>
         <h2 id="complete-title">Well held.</h2>
@@ -145,30 +112,22 @@
       </section>
     </main>
   </div>
-
   <div id="history-sheet" class="sheet" hidden role="dialog" aria-labelledby="history-title" aria-modal="true">
-    <div class="sheet-backdrop" data-close-history></div>
+    <div class="sheet-backdrop" id="history-backdrop"></div>
     <div class="sheet-panel">
       <div class="sheet-head">
         <h2 id="history-title">Practice log</h2>
         <button type="button" class="icon-btn" id="history-close" aria-label="Close history">&times;</button>
       </div>
       <dl class="history-summary">
-        <div>
-          <dt>Current streak</dt>
-          <dd id="hist-streak">0 days</dd>
-        </div>
-        <div>
-          <dt>Total minutes</dt>
-          <dd id="hist-total">0</dd>
-        </div>
+        <div><dt>Current streak</dt><dd id="hist-streak">0 days</dd></div>
+        <div><dt>Total minutes</dt><dd id="hist-total">0</dd></div>
       </dl>
       <ol class="history-list" id="history-list"></ol>
       <p class="history-empty" id="history-empty">No sittings yet. Begin when you are ready.</p>
     </div>
   </div>
-
-  <audio id="soundscape" loop preload="auto"></audio>
-  <script src="script.js" defer></script>
+  <audio id="soundscape" src="./nastelbom-meditation.mp3" loop preload="auto"></audio>
+  <script src="./script.js" defer></script>
 </body>
 </html>
