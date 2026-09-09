@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=4">
+  <link rel="stylesheet" href="./style.css?v=5">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -128,11 +128,34 @@
         <p class="week-card-meta"><span id="week-minutes">0</span> min · <span id="week-sits">0</span> sits</p>
         <p class="week-card-range">Mon–Sun · local</p>
       </div>
+      <div class="goals-card" id="goals-card" aria-label="Goals">
+        <p class="goals-card-label">Goals</p>
+        <p class="goals-row">Today <strong id="goal-daily"><span id="goal-daily-now">0</span> / <span id="goal-daily-target">10</span> min</strong></p>
+        <div class="goal-bar" aria-hidden="true"><span id="goal-daily-bar"></span></div>
+        <p class="goals-row">This week <strong id="goal-weekly"><span id="goal-weekly-now">0</span> / <span id="goal-weekly-target">5</span> sits</strong></p>
+        <div class="goal-bar" aria-hidden="true"><span id="goal-weekly-bar"></span></div>
+      </div>
+      <div class="calendar-card" id="calendar-card" aria-label="Practice calendar">
+        <div class="calendar-head">
+          <button type="button" class="icon-btn calendar-nav" id="cal-prev" aria-label="Previous month">‹</button>
+          <h3 class="calendar-title" id="cal-title">Month</h3>
+          <button type="button" class="icon-btn calendar-nav" id="cal-next" aria-label="Next month">›</button>
+        </div>
+        <div class="calendar-weekdays" aria-hidden="true">
+          <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+        </div>
+        <div class="calendar-grid" id="cal-grid" role="grid" aria-labelledby="cal-title"></div>
+        <p class="calendar-selected" id="cal-selected-label">Select a day</p>
+      </div>
+      <div class="badges-card" id="badges-card" aria-label="Badges">
+        <p class="badges-card-label">Badges</p>
+        <ul class="badges-list" id="badges-list"></ul>
+      </div>
       <ol class="history-list" id="history-list"></ol>
       <p class="history-empty" id="history-empty">No sittings yet. Begin when you are ready.</p>
     </div>
   </div>
-  <audio id="soundscape" src="./nastelbom-meditation.mp3.mp3" loop preload="auto"></audio>
-  <script src="./script.js?v=4" defer></script>
+  <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="auto"></audio>
+  <script src="./script.js?v=5" defer></script>
 </body>
 </html>
