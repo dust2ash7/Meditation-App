@@ -7,16 +7,23 @@ const SHELL = [
   "./manifest.json",
   "./icon.svg"
 ];
+const OPTIONAL_AUDIO = [
+  "./audio/stillpoint-sit.mp3",
+  "./audio/stillpoint-box.mp3",
+  "./audio/stillpoint-wind.mp3"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE);
       await cache.addAll(SHELL);
-      try {
-        await cache.add("./nastelbom-meditation.mp3.mp3");
-      } catch (err) {
-        // Audio is optional for the shell; the app still runs offline-ish.
+      for (const url of OPTIONAL_AUDIO) {
+        try {
+          await cache.add(url);
+        } catch (err) {
+          // Audio optional for shell install.
+        }
       }
       self.skipWaiting();
     })()
