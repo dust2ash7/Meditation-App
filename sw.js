@@ -1,4 +1,4 @@
-const CACHE = "stillpoint-v5";
+const CACHE = "stillpoint-v6";
 const SHELL = [
   "./",
   "./index.html",
@@ -52,9 +52,11 @@ self.addEventListener("fetch", (event) => {
       if (cached) return cached;
       try {
         const response = await fetch(request);
+        // Skip Partial Content (206) — Cache.put fails on range responses.
         if (
           response &&
           response.ok &&
+          response.status !== 206 &&
           new URL(request.url).origin === self.location.origin
         ) {
           const cache = await caches.open(CACHE);
