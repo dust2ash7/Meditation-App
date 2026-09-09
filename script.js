@@ -2,10 +2,32 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  const AUDIO_SRC = "./nastelbom-meditation.mp3.mp3";
+  /** Legacy single bed kept in repo; unused by the mode map (Sound Design owns MP3s). */
+  const LEGACY_AUDIO_SRC = "./nastelbom-meditation.mp3.mp3";
+  /**
+   * Per-mode looping beds. Sound Design lands binaries separately —
+   * expected paths (do not invent empty files in this PR):
+   *   ./audio/stillpoint-sit.mp3
+   *   ./audio/stillpoint-box.mp3
+   *   ./audio/stillpoint-wind.mp3
+   */
+  const AUDIO_BY_MODE = {
+    sit: "./audio/stillpoint-sit.mp3",
+    box: "./audio/stillpoint-box.mp3",
+    wind: "./audio/stillpoint-wind.mp3"
+  };
   const MUSIC_VOL = 0.32;
   const BELL_VOL = 0.72;
   const MIN_LOG_SECONDS = 15;
+  const DEFAULT_GOALS = { dailyMinutes: 10, weeklySits: 5 };
+
+  const BADGE_DEFS = [
+    { id: "first-sit", label: "First sit", desc: "Complete your first practice" },
+    { id: "streak-3", label: "3-day streak", desc: "Practice three days in a row" },
+    { id: "streak-7", label: "7-day streak", desc: "A full week of consecutive days" },
+    { id: "minutes-60", label: "60 minutes", desc: "Sixty minutes total practiced" },
+    { id: "week-sits-7", label: "Busy week", desc: "Seven sits in one Mon–Sun week" }
+  ];
 
   const TYPES = {
     sit: {
@@ -36,6 +58,8 @@
       ]
     }
   };
+
+  void LEGACY_AUDIO_SRC;
 
   const els = {
     begin: document.getElementById("begin-btn"),
@@ -74,6 +98,22 @@
       weekMinutes: document.getElementById("week-minutes"),
       weekSits: document.getElementById("week-sits")
     },
+    goals: {
+      dailyNow: document.getElementById("goal-daily-now"),
+      dailyTarget: document.getElementById("goal-daily-target"),
+      dailyBar: document.getElementById("goal-daily-bar"),
+      weeklyNow: document.getElementById("goal-weekly-now"),
+      weeklyTarget: document.getElementById("goal-weekly-target"),
+      weeklyBar: document.getElementById("goal-weekly-bar")
+    },
+    cal: {
+      title: document.getElementById("cal-title"),
+      grid: document.getElementById("cal-grid"),
+      prev: document.getElementById("cal-prev"),
+      next: document.getElementById("cal-next"),
+      selectedLabel: document.getElementById("cal-selected-label")
+    },
+    badgesList: document.getElementById("badges-list"),
     complete: {
       title: document.getElementById("complete-title"),
       meta: document.getElementById("complete-meta"),
@@ -97,27 +137,47 @@
     hiddenWhileRunning: false,
     sessionActive: false,
     bellArmed: false,
-    installEvent: null
+    installEvent: null,
+    calYear: new Date().getFullYear(),
+    calMonth: new Date().getMonth(),
+    selectedDay: todayKey()
   };
+
+  function defaultStore() {
+    return {
+      history: [],
+      musicEnabled: true,
+      muted: false,
+      goals: { ...DEFAULT_GOALS },
+      badges: []
+    };
+  }
 
   function loadStore() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { history: [], musicEnabled: true, muted: false };
+      if (!raw) return defaultStore();
       const data = JSON.parse(raw);
+      const goals = data.goals && typeof data.goals === "object" ? data.goals : {};
       return {
         history: Array.isArray(data.history) ? data.history : [],
         musicEnabled: data.musicEnabled !== false,
-        muted: Boolean(data.muted)
+        muted: Boolean(data.muted),
+        goals: {
+          dailyMinutes: Number(goals.dailyMinutes) > 0 ? Number(goals.dailyMinutes) : DEFAULT_GOALS.dailyMinutes,
+          weeklySits: Number(goals.weeklySits) > 0 ? Number(goals.weeklySits) : DEFAULT_GOALS.weeklySits
+        },
+        badges: Array.isArray(data.badges) ? data.badges : []
       };
     } catch {
-      return { history: [], musicEnabled: true, muted: false };
+      return defaultStore();
     }
   }
 
   function saveStore(patch) {
     const current = loadStore();
     const next = { ...current, ...patch };
+    if (patch.goals) next.goals = { ...current.goals, ...patch.goals };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     return next;
   }
@@ -127,6 +187,10 @@
     const m = String(date.getMonth() + 1).padStart(2, "0");
     const d = String(date.getDate()).padStart(2, "0");
     return `${y}-${m}-${d}`;
+  }
+
+  function audioSrcFor(type) {
+    return AUDIO_BY_MODE[type] || AUDIO_BY_MODE.sit;
   }
 
   function computeStreak(history) {
@@ -152,23 +216,22 @@
     return history.reduce((sum, item) => sum + (Number(item.minutes) || 0), 0);
   }
 
-  /** Local week Mon–Sun (inclusive). Label: "This week". */
   function startOfLocalWeek(date = new Date()) {
     const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const day = d.getDay(); // 0=Sun … 6=Sat
-    const diff = day === 0 ? -6 : 1 - day; // Monday start
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
     d.setDate(d.getDate() + diff);
     return d;
   }
 
-  function weekBounds() {
-    const start = startOfLocalWeek();
+  function weekBounds(date = new Date()) {
+    const start = startOfLocalWeek(date);
     const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
     return { startKey: todayKey(start), endKey: todayKey(end) };
   }
 
-  function weekStats(history) {
-    const { startKey, endKey } = weekBounds();
+  function weekStats(history, date = new Date()) {
+    const { startKey, endKey } = weekBounds(date);
     let minutes = 0;
     let sits = 0;
     history.forEach((item) => {
@@ -178,6 +241,65 @@
       sits += 1;
     });
     return { minutes, sits };
+  }
+
+  function dayMinutes(history, dayKey) {
+    return history
+      .filter((item) => item.day === dayKey)
+      .reduce((sum, item) => sum + (Number(item.minutes) || 0), 0);
+  }
+
+  function sessionsForDay(history, dayKey) {
+    return history.filter((item) => item.day === dayKey);
+  }
+
+  function practiceDays(history) {
+    const set = new Set();
+    history.forEach((item) => {
+      if (item && item.day) set.add(item.day);
+    });
+    return set;
+  }
+
+  function maxWeekSits(history) {
+    const byWeek = new Map();
+    history.forEach((item) => {
+      if (!item || !item.day) return;
+      const parts = item.day.split("-").map(Number);
+      if (parts.length !== 3) return;
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+      const { startKey } = weekBounds(date);
+      byWeek.set(startKey, (byWeek.get(startKey) || 0) + 1);
+    });
+    let max = 0;
+    byWeek.forEach((n) => {
+      if (n > max) max = n;
+    });
+    return max;
+  }
+
+  function evaluateBadges(store) {
+    const history = store.history;
+    const streak = computeStreak(history);
+    const total = totalMinutes(history);
+    const unlocked = new Set(store.badges || []);
+    const earned = [];
+    if (history.some((h) => h.completed) || history.length > 0) earned.push("first-sit");
+    if (streak >= 3) earned.push("streak-3");
+    if (streak >= 7) earned.push("streak-7");
+    if (total >= 60) earned.push("minutes-60");
+    if (maxWeekSits(history) >= 7 || weekStats(history).sits >= 7) earned.push("week-sits-7");
+    let changed = false;
+    earned.forEach((id) => {
+      if (!unlocked.has(id)) {
+        unlocked.add(id);
+        changed = true;
+      }
+    });
+    if (changed) {
+      return saveStore({ badges: [...unlocked] });
+    }
+    return store;
   }
 
   function formatTime(totalSeconds) {
@@ -224,8 +346,124 @@
     els.soundscape.muted = state.muted;
   }
 
+  function setGoalBar(el, now, target) {
+    if (!el) return;
+    const pct = target > 0 ? Math.min(100, Math.round((now / target) * 100)) : 0;
+    el.style.width = `${pct}%`;
+  }
+
+  function renderGoals(store) {
+    const history = store.history;
+    const goals = store.goals || DEFAULT_GOALS;
+    const todayMins = dayMinutes(history, todayKey());
+    const week = weekStats(history);
+    if (els.goals.dailyNow) els.goals.dailyNow.textContent = String(todayMins);
+    if (els.goals.dailyTarget) els.goals.dailyTarget.textContent = String(goals.dailyMinutes);
+    if (els.goals.weeklyNow) els.goals.weeklyNow.textContent = String(week.sits);
+    if (els.goals.weeklyTarget) els.goals.weeklyTarget.textContent = String(goals.weeklySits);
+    setGoalBar(els.goals.dailyBar, todayMins, goals.dailyMinutes);
+    setGoalBar(els.goals.weeklyBar, week.sits, goals.weeklySits);
+  }
+
+  function renderBadges(store) {
+    if (!els.badgesList) return;
+    const unlocked = new Set(store.badges || []);
+    els.badgesList.replaceChildren();
+    BADGE_DEFS.forEach((def) => {
+      const li = document.createElement("li");
+      const on = unlocked.has(def.id);
+      li.className = on ? "badge is-unlocked" : "badge is-locked";
+      li.title = def.desc;
+      const name = document.createElement("span");
+      name.className = "badge-name";
+      name.textContent = def.label;
+      const mark = document.createElement("span");
+      mark.className = "badge-mark";
+      mark.textContent = on ? "✦" : "·";
+      li.append(mark, name);
+      els.badgesList.append(li);
+    });
+  }
+
+  function renderCalendar(store) {
+    if (!els.cal.grid) return;
+    const days = practiceDays(store.history);
+    const year = state.calYear;
+    const month = state.calMonth;
+    const first = new Date(year, month, 1);
+    const monthLabel = first.toLocaleString(undefined, { month: "long", year: "numeric" });
+    els.cal.title.textContent = monthLabel;
+
+    const startPad = (first.getDay() + 6) % 7; // Monday-first
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    els.cal.grid.replaceChildren();
+
+    for (let i = 0; i < startPad; i += 1) {
+      const empty = document.createElement("span");
+      empty.className = "cal-cell is-empty";
+      empty.setAttribute("aria-hidden", "true");
+      els.cal.grid.append(empty);
+    }
+
+    const today = todayKey();
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const date = new Date(year, month, d);
+      const key = todayKey(date);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cal-cell";
+      btn.textContent = String(d);
+      btn.dataset.day = key;
+      if (days.has(key)) btn.classList.add("has-practice");
+      if (key === today) btn.classList.add("is-today");
+      if (key === state.selectedDay) btn.classList.add("is-selected");
+      btn.setAttribute("aria-label", `${key}${days.has(key) ? ", practice logged" : ""}`);
+      btn.addEventListener("click", () => {
+        state.selectedDay = key;
+        renderStats();
+      });
+      els.cal.grid.append(btn);
+    }
+
+    if (els.cal.selectedLabel) {
+      const count = sessionsForDay(store.history, state.selectedDay).length;
+      els.cal.selectedLabel.textContent = count
+        ? `${state.selectedDay} · ${count} session${count === 1 ? "" : "s"}`
+        : `${state.selectedDay} · no sessions`;
+    }
+  }
+
+  function renderHistoryList(store) {
+    els.historyList.replaceChildren();
+    const dayKey = state.selectedDay;
+    const items = sessionsForDay(store.history, dayKey).slice().reverse();
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      const left = document.createElement("div");
+      const right = document.createElement("strong");
+      const done = item.completed ? "completed" : "stopped early";
+      left.textContent = `${item.day} · ${item.typeLabel}`;
+      right.textContent = item.isOpen
+        ? `${item.minutes} min · open · ${done}`
+        : `${item.minutes} min · ${done}`;
+      li.append(left, right);
+      els.historyList.append(li);
+    });
+    els.historyEmpty.hidden = items.length > 0 || store.history.length > 0;
+    if (!items.length) {
+      els.historyEmpty.hidden = false;
+      els.historyEmpty.textContent = store.history.length
+        ? "No sittings on this day."
+        : "No sittings yet. Begin when you are ready.";
+    } else {
+      els.historyEmpty.hidden = true;
+    }
+  }
+
   function renderStats() {
-    const { history } = loadStore();
+    let store = loadStore();
+    store = evaluateBadges(store);
+    const history = store.history;
     const streak = computeStreak(history);
     const total = totalMinutes(history);
     const week = weekStats(history);
@@ -236,18 +474,10 @@
     els.hist.total.textContent = String(total);
     if (els.hist.weekMinutes) els.hist.weekMinutes.textContent = String(week.minutes);
     if (els.hist.weekSits) els.hist.weekSits.textContent = String(week.sits);
-    els.historyList.replaceChildren();
-    const recent = [...history].reverse().slice(0, 24);
-    recent.forEach((item) => {
-      const li = document.createElement("li");
-      const left = document.createElement("div");
-      const right = document.createElement("strong");
-      left.textContent = `${item.day} \u00b7 ${item.typeLabel}`;
-      right.textContent = item.isOpen ? `${item.minutes} min \u00b7 open` : `${item.minutes} min`;
-      li.append(left, right);
-      els.historyList.append(li);
-    });
-    els.historyEmpty.hidden = history.length > 0;
+    renderGoals(store);
+    renderBadges(store);
+    renderCalendar(store);
+    renderHistoryList(store);
   }
 
   function clearTimers() {
@@ -286,13 +516,33 @@
     });
   }
 
-  function ensureAudioReady() {
-    if (els.soundscape.getAttribute("src") !== AUDIO_SRC) {
-      els.soundscape.src = AUDIO_SRC;
+  /**
+   * Pause, swap #soundscape src for mode, load, optionally reset to 0.
+   * Called on Begin and when practice mode changes while idle.
+   */
+  function applyModeAudio(type, { reset = false, play = false } = {}) {
+    const src = audioSrcFor(type);
+    const current = els.soundscape.getAttribute("src") || "";
+    const needsSwap = current !== src;
+    if (needsSwap || reset) {
+      els.soundscape.pause();
+      if (needsSwap) {
+        els.soundscape.src = src;
+        els.soundscape.load();
+      }
+      if (reset) els.soundscape.currentTime = 0;
     }
     els.soundscape.loop = true;
     els.soundscape.muted = state.muted;
     updateSoundscapeVolume();
+    if (play && state.musicEnabled) {
+      const p = els.soundscape.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    }
+  }
+
+  function ensureAudioReady() {
+    applyModeAudio(state.type || selectedType(), { reset: false, play: false });
   }
 
   /** Linear fade of els.soundscape over last 30s of a timed sit only. */
@@ -314,13 +564,7 @@
   }
 
   function startAudioFromGesture(reset) {
-    ensureAudioReady();
-    if (!state.musicEnabled) return;
-    if (reset) els.soundscape.currentTime = 0;
-    const play = els.soundscape.play();
-    if (play && typeof play.catch === "function") {
-      play.catch(() => {});
-    }
+    applyModeAudio(state.type, { reset: Boolean(reset), play: true });
   }
 
   function pauseAudio(reset) {
@@ -478,7 +722,9 @@
       isOpen: state.isOpen,
       at: Date.now()
     });
-    saveStore({ history: store.history });
+    let next = saveStore({ history: store.history });
+    next = evaluateBadges(next);
+    return next;
   }
 
   function completeSession(natural) {
@@ -569,6 +815,14 @@
     }
   }
 
+  function onModeChange() {
+    const type = selectedType();
+    state.type = type;
+    if (state.status === "idle" || state.status === "complete") {
+      applyModeAudio(type, { reset: false, play: false });
+    }
+  }
+
   function bind() {
     els.begin.addEventListener("click", () => {
       beginSession();
@@ -592,9 +846,32 @@
         if (state.status === "idle") renderConfiguredTime();
       });
     });
+    document.querySelectorAll('input[name="session-type"]').forEach((input) => {
+      input.addEventListener("change", onModeChange);
+    });
     els.customMinutes.addEventListener("input", () => {
       if (state.status === "idle") renderConfiguredTime();
     });
+    if (els.cal.prev) {
+      els.cal.prev.addEventListener("click", () => {
+        state.calMonth -= 1;
+        if (state.calMonth < 0) {
+          state.calMonth = 11;
+          state.calYear -= 1;
+        }
+        renderStats();
+      });
+    }
+    if (els.cal.next) {
+      els.cal.next.addEventListener("click", () => {
+        state.calMonth += 1;
+        if (state.calMonth > 11) {
+          state.calMonth = 0;
+          state.calYear += 1;
+        }
+        renderStats();
+      });
+    }
     document.addEventListener("visibilitychange", onVisibility);
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !els.historySheet.hidden) {
@@ -634,6 +911,8 @@
     const store = loadStore();
     state.musicEnabled = store.musicEnabled;
     state.muted = store.muted;
+    state.type = selectedType();
+    state.selectedDay = todayKey();
     ensureAudioReady();
     syncMusicButtons();
     renderConfiguredTime();
