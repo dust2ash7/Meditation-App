@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=4">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -123,11 +123,16 @@
         <div><dt>Current streak</dt><dd id="hist-streak">0 days</dd></div>
         <div><dt>Total minutes</dt><dd id="hist-total">0</dd></div>
       </dl>
+      <div class="week-card" id="week-card" aria-label="This week">
+        <p class="week-card-label">This week</p>
+        <p class="week-card-meta"><span id="week-minutes">0</span> min · <span id="week-sits">0</span> sits</p>
+        <p class="week-card-range">Mon–Sun · local</p>
+      </div>
       <ol class="history-list" id="history-list"></ol>
       <p class="history-empty" id="history-empty">No sittings yet. Begin when you are ready.</p>
     </div>
   </div>
   <audio id="soundscape" src="./nastelbom-meditation.mp3.mp3" loop preload="auto"></audio>
-  <script src="./script.js" defer></script>
+  <script src="./script.js?v=4" defer></script>
 </body>
 </html>
