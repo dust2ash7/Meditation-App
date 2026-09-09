@@ -70,7 +70,9 @@
     },
     hist: {
       streak: document.getElementById("hist-streak"),
-      total: document.getElementById("hist-total")
+      total: document.getElementById("hist-total"),
+      weekMinutes: document.getElementById("week-minutes"),
+      weekSits: document.getElementById("week-sits")
     },
     complete: {
       title: document.getElementById("complete-title"),
@@ -150,6 +152,34 @@
     return history.reduce((sum, item) => sum + (Number(item.minutes) || 0), 0);
   }
 
+  /** Local week Mon–Sun (inclusive). Label: "This week". */
+  function startOfLocalWeek(date = new Date()) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const day = d.getDay(); // 0=Sun … 6=Sat
+    const diff = day === 0 ? -6 : 1 - day; // Monday start
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  function weekBounds() {
+    const start = startOfLocalWeek();
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+    return { startKey: todayKey(start), endKey: todayKey(end) };
+  }
+
+  function weekStats(history) {
+    const { startKey, endKey } = weekBounds();
+    let minutes = 0;
+    let sits = 0;
+    history.forEach((item) => {
+      const day = item && item.day;
+      if (!day || day < startKey || day > endKey) return;
+      minutes += Number(item.minutes) || 0;
+      sits += 1;
+    });
+    return { minutes, sits };
+  }
+
   function formatTime(totalSeconds) {
     const safe = Math.max(0, Math.floor(totalSeconds));
     const mins = Math.floor(safe / 60);
@@ -198,11 +228,14 @@
     const { history } = loadStore();
     const streak = computeStreak(history);
     const total = totalMinutes(history);
+    const week = weekStats(history);
     els.stats.streak.textContent = streak === 1 ? "1 day" : `${streak} days`;
     els.stats.total.textContent = `${total} min`;
     els.stats.count.textContent = String(history.length);
     els.hist.streak.textContent = els.stats.streak.textContent;
     els.hist.total.textContent = String(total);
+    if (els.hist.weekMinutes) els.hist.weekMinutes.textContent = String(week.minutes);
+    if (els.hist.weekSits) els.hist.weekSits.textContent = String(week.sits);
     els.historyList.replaceChildren();
     const recent = [...history].reverse().slice(0, 24);
     recent.forEach((item) => {
@@ -259,6 +292,24 @@
     }
     els.soundscape.loop = true;
     els.soundscape.muted = state.muted;
+    updateSoundscapeVolume();
+  }
+
+  /** Linear fade of els.soundscape over last 30s of a timed sit only. */
+  function updateSoundscapeVolume() {
+    if (!state.musicEnabled || state.muted || state.isOpen || !state.sessionActive) {
+      els.soundscape.volume = MUSIC_VOL;
+      return;
+    }
+    if (state.remaining > 30) {
+      els.soundscape.volume = MUSIC_VOL;
+      return;
+    }
+    const t = Math.max(0, state.remaining) / 30;
+    els.soundscape.volume = MUSIC_VOL * t;
+  }
+
+  function stopSoundscapeFade() {
     els.soundscape.volume = MUSIC_VOL;
   }
 
@@ -325,6 +376,7 @@
       return;
     }
     state.remaining = Math.max(0, state.remaining - 1);
+    updateSoundscapeVolume();
     renderTimerNow();
     if (state.remaining === 0) {
       if (state.status === "running") completeSession(true);
@@ -368,6 +420,7 @@
     if (state.status !== "running") return;
     state.status = "paused";
     clearTimers();
+    stopSoundscapeFade();
     pauseAudio(false);
     document.body.classList.remove("is-running");
     els.pause.textContent = "Resume";
@@ -384,6 +437,7 @@
     renderTimerNow();
     schedulePhases();
     startAudioFromGesture(false);
+    updateSoundscapeVolume();
     startTicking();
   }
 
@@ -397,6 +451,7 @@
     const elapsed = state.elapsed;
     clearTimers();
     state.sessionActive = false;
+    stopSoundscapeFade();
     pauseAudio(true);
     document.body.classList.remove(
       "is-running", "is-sit", "is-box", "is-wind",
@@ -431,6 +486,7 @@
     const elapsed = state.elapsed;
     clearTimers();
     state.sessionActive = false;
+    stopSoundscapeFade();
     pauseAudio(true);
     state.status = "complete";
     document.body.classList.remove("is-running");
@@ -472,6 +528,7 @@
     }
     if (state.sessionActive) {
       startAudioFromGesture(false);
+      updateSoundscapeVolume();
     }
   }
 
@@ -479,9 +536,11 @@
     state.muted = !state.muted;
     saveStore({ muted: state.muted });
     syncMusicButtons();
+    updateSoundscapeVolume();
   }
 
   function openHistory() {
+    renderStats();
     els.historySheet.hidden = false;
     els.historyBtn.setAttribute("aria-expanded", "true");
     els.historyClose.focus();
