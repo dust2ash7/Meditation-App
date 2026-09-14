@@ -4,7 +4,7 @@ A quiet, cinematic meditation PWA from **Raven Flock**. Timed sits, box breathin
 
 Live: [dust2ash7.github.io/Meditation-App](https://dust2ash7.github.io/Meditation-App/)
 
-Tip jar (replace with your real Buy Me a Coffee slug): [buymeacoffee.com/ravenflock](https://www.buymeacoffee.com/ravenflock)
+Tip jar: [buymeacoffee.com/nrsteward](https://www.buymeacoffee.com/nrsteward)
 
 This rewrite replaces the original timer UI. The two existing audio files in the repo are left untouched.
 
