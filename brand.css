@@ -99,6 +99,46 @@ a.primary-btn {
   border-radius: 0.4rem;
 }
 
+.sound-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.sound-chip-btn {
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--mist);
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(16px);
+}
+
+.sound-chip-btn:hover {
+  border-color: var(--line-strong);
+  color: var(--gold-bright);
+}
+
+.sound-chip-btn.is-on {
+  border-color: var(--gold);
+  color: var(--bg);
+  background: var(--gold);
+  font-weight: 600;
+}
+
+.sound-row-session {
+  justify-content: center;
+  margin: 0 0 1.15rem;
+}
+
+.sound-row-session .sound-chip-btn {
+  min-height: 36px;
+  padding: 0 0.75rem;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 420px) {
   .topbar-actions .tip-btn {
     padding-inline: 0.7rem;
