@@ -2,20 +2,13 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  /** Legacy single bed kept in repo; unused by the mode map (Sound Design owns MP3s). */
   const LEGACY_AUDIO_SRC = "./nastelbom-meditation.mp3.mp3";
-  /**
-   * Per-mode looping beds. Sound Design lands binaries separately —
-   * expected paths (do not invent empty files in this PR):
-   *   ./audio/stillpoint-sit.mp3
-   *   ./audio/stillpoint-box.mp3
-   *   ./audio/stillpoint-wind.mp3
-   */
   const AUDIO_BY_MODE = {
     sit: "./audio/stillpoint-sit.mp3",
     box: "./audio/stillpoint-box.mp3",
     wind: "./audio/stillpoint-wind.mp3"
   };
+  const SOUND_KINDS = ["soft", "white", "rain", "fall", "shore", "wild"];
   const MUSIC_VOL = 0.32;
   const BELL_VOL = 0.72;
   const MIN_LOG_SECONDS = 15;
@@ -130,6 +123,7 @@
     elapsed: 0,
     musicEnabled: true,
     muted: false,
+    soundId: "soft",
     timerId: null,
     phaseId: null,
     phaseIndex: 0,
@@ -148,6 +142,7 @@
       history: [],
       musicEnabled: true,
       muted: false,
+      soundId: "soft",
       goals: { ...DEFAULT_GOALS },
       badges: []
     };
@@ -163,6 +158,7 @@
         history: Array.isArray(data.history) ? data.history : [],
         musicEnabled: data.musicEnabled !== false,
         muted: Boolean(data.muted),
+        soundId: SOUND_KINDS.includes(data.soundId) ? data.soundId : "soft",
         goals: {
           dailyMinutes: Number(goals.dailyMinutes) > 0 ? Number(goals.dailyMinutes) : DEFAULT_GOALS.dailyMinutes,
           weeklySits: Number(goals.weeklySits) > 0 ? Number(goals.weeklySits) : DEFAULT_GOALS.weeklySits
@@ -296,9 +292,7 @@
         changed = true;
       }
     });
-    if (changed) {
-      return saveStore({ badges: [...unlocked] });
-    }
+    if (changed) return saveStore({ badges: [...unlocked] });
     return store;
   }
 
@@ -338,12 +332,77 @@
     document.body.classList.toggle("is-complete", name === "complete");
   }
 
+  function engine() {
+    return window.StillpointSound || null;
+  }
+
+  function isSynthKind(id) {
+    const e = engine();
+    return Boolean(e && e.isSynth(id || state.soundId));
+  }
+
+  function fadeFactor() {
+    if (!state.musicEnabled || state.muted || state.isOpen || !state.sessionActive) return 1;
+    if (state.remaining > 30) return 1;
+    return Math.max(0, state.remaining) / 30;
+  }
+
+  function syncSoundChoice() {
+    document.querySelectorAll(".sound-chip-btn").forEach((btn) => {
+      const on = btn.dataset.sound === state.soundId;
+      btn.classList.toggle("is-on", on);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+  }
+
   function syncMusicButtons() {
     els.audioBtn.setAttribute("aria-pressed", String(state.musicEnabled));
     els.audioBtn.textContent = state.musicEnabled ? "Soundscape on" : "Soundscape off";
     els.mute.setAttribute("aria-pressed", String(state.muted));
     els.mute.setAttribute("aria-label", state.muted ? "Unmute" : "Mute");
     els.soundscape.muted = state.muted;
+    const e = engine();
+    if (e) {
+      e.setMuted(state.muted);
+      e.setEnabled(state.musicEnabled);
+    }
+    syncSoundChoice();
+  }
+
+  function applyChosenSound({ reset = false, play = false } = {}) {
+    const e = engine();
+    const synth = isSynthKind(state.soundId);
+    if (e) {
+      e.setMuted(state.muted);
+      e.setEnabled(state.musicEnabled);
+    }
+    if (synth) {
+      els.soundscape.pause();
+      if (reset) els.soundscape.currentTime = 0;
+      if (play && state.musicEnabled) {
+        e.resume();
+        e.setKind(state.soundId);
+        e.setFade(state.muted ? 0 : fadeFactor());
+      } else if (e) {
+        e.stop();
+      }
+      return;
+    }
+    if (e) e.stop();
+    applyModeAudio(state.type, { reset, play });
+  }
+
+  function setSound(id) {
+    const next = SOUND_KINDS.includes(id) ? id : "soft";
+    state.soundId = next;
+    saveStore({ soundId: next });
+    syncSoundChoice();
+    if (state.sessionActive && state.status === "running") {
+      applyChosenSound({ reset: false, play: true });
+      updateSoundscapeVolume();
+    } else if (state.sessionActive && state.status === "paused") {
+      applyChosenSound({ reset: false, play: false });
+    }
   }
 
   function setGoalBar(el, now, target) {
@@ -393,18 +452,15 @@
     const first = new Date(year, month, 1);
     const monthLabel = first.toLocaleString(undefined, { month: "long", year: "numeric" });
     els.cal.title.textContent = monthLabel;
-
-    const startPad = (first.getDay() + 6) % 7; // Monday-first
+    const startPad = (first.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     els.cal.grid.replaceChildren();
-
     for (let i = 0; i < startPad; i += 1) {
       const empty = document.createElement("span");
       empty.className = "cal-cell is-empty";
       empty.setAttribute("aria-hidden", "true");
       els.cal.grid.append(empty);
     }
-
     const today = todayKey();
     for (let d = 1; d <= daysInMonth; d += 1) {
       const date = new Date(year, month, d);
@@ -424,7 +480,6 @@
       });
       els.cal.grid.append(btn);
     }
-
     if (els.cal.selectedLabel) {
       const count = sessionsForDay(store.history, state.selectedDay).length;
       els.cal.selectedLabel.textContent = count
@@ -516,10 +571,6 @@
     });
   }
 
-  /**
-   * Pause, swap #soundscape src for mode, load, optionally reset to 0.
-   * Called on Begin and when practice mode changes while idle.
-   */
   function applyModeAudio(type, { reset = false, play = false } = {}) {
     const src = audioSrcFor(type);
     const current = els.soundscape.getAttribute("src") || "";
@@ -545,31 +596,32 @@
     applyModeAudio(state.type || selectedType(), { reset: false, play: false });
   }
 
-  /** Linear fade of els.soundscape over last 30s of a timed sit only. */
   function updateSoundscapeVolume() {
+    const t = fadeFactor();
     if (!state.musicEnabled || state.muted || state.isOpen || !state.sessionActive) {
       els.soundscape.volume = MUSIC_VOL;
-      return;
+    } else {
+      els.soundscape.volume = MUSIC_VOL * t;
     }
-    if (state.remaining > 30) {
-      els.soundscape.volume = MUSIC_VOL;
-      return;
-    }
-    const t = Math.max(0, state.remaining) / 30;
-    els.soundscape.volume = MUSIC_VOL * t;
+    const e = engine();
+    if (e) e.setFade(state.musicEnabled && !state.muted ? t : 0);
   }
 
   function stopSoundscapeFade() {
     els.soundscape.volume = MUSIC_VOL;
+    const e = engine();
+    if (e) e.setFade(state.musicEnabled && !state.muted ? 1 : 0);
   }
 
   function startAudioFromGesture(reset) {
-    applyModeAudio(state.type, { reset: Boolean(reset), play: true });
+    applyChosenSound({ reset: Boolean(reset), play: true });
   }
 
   function pauseAudio(reset) {
     els.soundscape.pause();
     if (reset) els.soundscape.currentTime = 0;
+    const e = engine();
+    if (e) e.stop();
   }
 
   function setPhase(index) {
@@ -597,19 +649,13 @@
   }
 
   function renderTimerNow() {
-    if (state.isOpen) {
-      els.timer.textContent = formatTime(state.elapsed);
-    } else {
-      els.timer.textContent = formatTime(state.remaining);
-    }
+    if (state.isOpen) els.timer.textContent = formatTime(state.elapsed);
+    else els.timer.textContent = formatTime(state.remaining);
   }
 
   function announceTime() {
-    if (state.isOpen) {
-      els.timerLive.textContent = `Elapsed ${formatTime(state.elapsed)}`;
-    } else {
-      els.timerLive.textContent = `${formatTime(state.remaining)} remaining`;
-    }
+    if (state.isOpen) els.timerLive.textContent = `Elapsed ${formatTime(state.elapsed)}`;
+    else els.timerLive.textContent = `${formatTime(state.remaining)} remaining`;
   }
 
   function tick() {
@@ -704,9 +750,7 @@
     state.status = "idle";
     setView("home");
     resetToConfiguredTime();
-    if (elapsed >= MIN_LOG_SECONDS) {
-      logSession(false, elapsed);
-    }
+    if (elapsed >= MIN_LOG_SECONDS) logSession(false, elapsed);
     renderStats();
   }
 
@@ -824,16 +868,12 @@
   }
 
   function bind() {
-    els.begin.addEventListener("click", () => {
-      beginSession();
-    });
+    els.begin.addEventListener("click", () => beginSession());
     els.pause.addEventListener("click", () => {
       if (state.status === "running") pauseSession();
       else if (state.status === "paused") resumeSession();
     });
-    els.stop.addEventListener("click", () => {
-      stopSession();
-    });
+    els.stop.addEventListener("click", () => stopSession());
     els.audioBtn.addEventListener("click", toggleMusic);
     els.mute.addEventListener("click", toggleMute);
     els.home.addEventListener("click", goHome);
@@ -848,6 +888,9 @@
     });
     document.querySelectorAll('input[name="session-type"]').forEach((input) => {
       input.addEventListener("change", onModeChange);
+    });
+    document.querySelectorAll(".sound-chip-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setSound(btn.dataset.sound));
     });
     els.customMinutes.addEventListener("input", () => {
       if (state.status === "idle") renderConfiguredTime();
@@ -911,10 +954,12 @@
     const store = loadStore();
     state.musicEnabled = store.musicEnabled;
     state.muted = store.muted;
+    state.soundId = SOUND_KINDS.includes(store.soundId) ? store.soundId : "soft";
     state.type = selectedType();
     state.selectedDay = todayKey();
     ensureAudioReady();
     syncMusicButtons();
+    syncSoundChoice();
     renderConfiguredTime();
     renderStats();
     bind();

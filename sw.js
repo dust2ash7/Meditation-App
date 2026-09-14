@@ -1,9 +1,10 @@
-const CACHE = "stillpoint-v8";
+const CACHE = "stillpoint-v10";
 const SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./brand.css",
+  "./sounds.js",
   "./script.js",
   "./manifest.json",
   "./icon.svg"
@@ -20,11 +21,7 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(CACHE);
       await cache.addAll(SHELL);
       for (const url of OPTIONAL_AUDIO) {
-        try {
-          await cache.add(url);
-        } catch (err) {
-          // Audio optional for shell install.
-        }
+        try { await cache.add(url); } catch (err) {}
       }
       self.skipWaiting();
     })()
@@ -35,9 +32,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      await Promise.all(
-        keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))
-      );
+      await Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)));
       self.clients.claim();
     })()
   );
@@ -46,19 +41,13 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
-
   event.respondWith(
     (async () => {
       const cached = await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
       try {
         const response = await fetch(request);
-        if (
-          response &&
-          response.ok &&
-          response.status !== 206 &&
-          new URL(request.url).origin === self.location.origin
-        ) {
+        if (response && response.ok && response.status !== 206 && new URL(request.url).origin === self.location.origin) {
           const cache = await caches.open(CACHE);
           cache.put(request, response.clone());
         }
