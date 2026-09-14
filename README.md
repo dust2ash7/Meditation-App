@@ -1,8 +1,10 @@
 # Stillpoint
 
-A quiet, cinematic meditation PWA. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts, no paywall, nothing to install unless you want it on your home screen.
+A quiet, cinematic meditation PWA from **Raven Flock**. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts. Tips optional.
 
-Live after merge: [dust2ash7.github.io/Meditation-App](https://dust2ash7.github.io/Meditation-App/)
+Live: [dust2ash7.github.io/Meditation-App](https://dust2ash7.github.io/Meditation-App/)
+
+Tip jar (replace with your real Buy Me a Coffee slug): [buymeacoffee.com/ravenflock](https://www.buymeacoffee.com/ravenflock)
 
 This rewrite replaces the original timer UI. The two existing audio files in the repo are left untouched.
 
@@ -30,7 +32,7 @@ Streaks count consecutive calendar days with at least one completed sitting. Mis
 
 ## Progressive web app
 
-`manifest.json` uses local `icon.svg` (no third-party placeholder images). The service worker is registered at `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative (`./index.html`, …). The app is a static site: HTML, CSS, and JavaScript.
+`manifest.json` uses local `icon.svg` (Raven Flock mark). The service worker is registered at `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative (`./index.html`, …). The app is a static site: HTML, CSS, and JavaScript.
 
 ## Accessibility and comfort
 
