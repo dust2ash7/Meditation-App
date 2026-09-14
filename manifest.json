@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Stillpoint",
+  "name": "Stillpoint by Raven Flock",
   "short_name": "Stillpoint",
-  "description": "A quiet, cinematic meditation space with timed sits, box breathing, and wind-down.",
+  "description": "A quiet meditation space from Raven Flock — timed sits, box breathing, and wind-down.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

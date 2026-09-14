@@ -1,8 +1,9 @@
-const CACHE = "stillpoint-v7";
+const CACHE = "stillpoint-v8";
 const SHELL = [
   "./",
   "./index.html",
   "./style.css",
+  "./brand.css",
   "./script.js",
   "./manifest.json",
   "./icon.svg"
@@ -52,7 +53,6 @@ self.addEventListener("fetch", (event) => {
       if (cached) return cached;
       try {
         const response = await fetch(request);
-        // Skip Partial Content (206) — Cache.put fails on range responses.
         if (
           response &&
           response.ok &&
