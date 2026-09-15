@@ -1,12 +1,10 @@
 # Stillpoint
 
-A quiet, cinematic meditation PWA from **Raven Flock**. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts. Tips optional.
+A quiet meditation PWA from **Raven Flock**. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts. Tips optional.
 
 Live: [dust2ash7.github.io/Meditation-App](https://dust2ash7.github.io/Meditation-App/)
 
 Tip jar: [buymeacoffee.com/nrsteward](https://www.buymeacoffee.com/nrsteward)
-
-This rewrite replaces the original timer UI. The two existing audio files in the repo are left untouched.
 
 ## Practice
 
@@ -16,23 +14,40 @@ This rewrite replaces the original timer UI. The two existing audio files in the
 
 Lengths: **5, 10, 15, 20 minutes**, **open** (counts up until you stop), or a **custom minutes** field.
 
-During a sitting you can pause, loop the soundscape, mute, or stop. A soft Web Audio chime marks the start and a completed sit. Sittings of 15 seconds or longer are stored in history.
+During a sitting you can pause, switch soundscapes, mute, or stop. A soft Web Audio chime marks a completed sit. Sittings of 15 seconds or longer are stored in history.
 
 ## Sound
 
-The looping bed is `./nastelbom-meditation.mp3` (repo-relative). Playback starts from the **Begin** click so browsers allow it. Turning soundscape off, then on, while a session is running resumes the track. Mute silences the bed and chimes without tearing down the session.
+Pick a bed on the home screen or mid-sit:
 
-Both `nastelbom-meditation.mp3` and `nastelbom-meditation.mp3.mp3` remain in the repository. The app never points at a GitHub `blob` URL and never uses the doubled `.mp3.mp3` filename as a source.
+| Chip | What you hear |
+|------|----------------|
+| **Soft** | Mode bed in `audio/` — sit, box, or wind |
+| **White** | Filtered noise, generated in the browser |
+| **Rain** | Light rain + drips |
+| **Rainfall** | Heavier rain |
+| **Beach** | Low swell |
+| **Nature** | Low bed + occasional chirps |
+
+Soft uses:
+
+- `./audio/stillpoint-sit.mp3`
+- `./audio/stillpoint-box.mp3`
+- `./audio/stillpoint-wind.mp3`
+
+Sources and licenses are in [`audio/CREDITS.md`](./audio/CREDITS.md). The other chips are synthesized by `sounds.js` — no extra files.
+
+Playback starts from the **Begin** click so browsers allow it. Mute silences the bed and chimes without ending the session.
 
 ## What is stored locally
 
-History, streak, total minutes, mute, and soundscape preference live in `localStorage` under `stillpoint-v1`. Nothing is sent anywhere.
+History, streak, total minutes, mute, soundscape on/off, and the selected sound live in `localStorage` under `stillpoint-v1`. Nothing is sent anywhere.
 
 Streaks count consecutive calendar days with at least one completed sitting. Missing today still keeps yesterday’s streak until midnight.
 
 ## Progressive web app
 
-`manifest.json` uses local `icon.svg` (Raven Flock mark). The service worker is registered at `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative (`./index.html`, …). The app is a static site: HTML, CSS, and JavaScript.
+`manifest.json` uses local `icon.svg` (Raven Flock mark). The service worker is `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative. The app is a static site: HTML, CSS, and JavaScript.
 
 ## Accessibility and comfort
 
