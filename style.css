@@ -262,12 +262,15 @@ button {
   color: #1a140c;
   font-weight: 600;
   letter-spacing: 0.04em;
-  border: 0;
-  box-shadow: 0 10px 40px rgba(196, 165, 116, 0.18);
+  border: 1px solid transparent;
+  box-shadow: 0 6px 22px rgba(196, 165, 116, 0.08);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .primary-btn:hover {
-  filter: brightness(1.05);
+  transform: translateY(-1px);
+  border-color: rgba(234, 217, 176, 0.55);
+  box-shadow: 0 8px 26px rgba(196, 165, 116, 0.1);
 }
 
 .primary-btn:disabled,
@@ -409,13 +412,26 @@ button {
   font-weight: 600;
 }
 
+/* Or minutes only when Open is selected */
 .custom-mins {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.85rem;
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+.duration-row:has(input[value="0"]:checked) ~ .custom-mins {
+  display: flex;
+}
+
+.duration-row:has(input[value="0"]:checked) ~ #custom-hint {
+  display: block;
+}
+
+.chooser #custom-hint {
+  display: none;
 }
 
 .custom-mins input {
@@ -563,8 +579,8 @@ body.is-sit .orb {
 }
 
 @keyframes breathe {
-  0%, 100% { transform: scale(0.88); filter: brightness(0.88); }
-  40% { transform: scale(1.1); filter: brightness(1.12); }
+  0%, 100% { transform: scale(0.88); }
+  40% { transform: scale(1.1); }
   55% { transform: scale(1.1); }
 }
 
@@ -636,6 +652,22 @@ body.is-complete .orb-halo,
   border: 1px solid var(--line);
   width: min(42rem, 100%);
   margin: 0 auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(196, 165, 116, 0.35) #101412;
+}
+
+.sheet-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sheet-panel::-webkit-scrollbar-track {
+  background: #101412;
+}
+
+.sheet-panel::-webkit-scrollbar-thumb {
+  background: rgba(196, 165, 116, 0.35);
+  border-radius: 999px;
+  border: 2px solid #101412;
 }
 
 .sheet-head {
@@ -924,4 +956,46 @@ body.is-session .home-hero,
   .glow {
     opacity: 0.3;
   }
+}
+
+
+/* Launch P0: calm iOS A2HS guidance */
+.topbar-actions { position: relative; }
+.a2hs-tip {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  max-width: 16rem;
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.65rem;
+  background: rgba(16, 13, 24, 0.92);
+  border: 1px solid rgba(196, 165, 116, 0.22);
+  color: #e8e0d4;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  z-index: 20;
+}
+
+
+/* Visual Polish: session sound name (chips removed) */
+.session-sound-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+}
+
+.view-complete .tip-btn-block {
+  display: block;
+  width: fit-content;
+  margin: 0.85rem auto 0;
+  text-align: center;
+}
+
+.view-complete #home-btn {
+  margin-top: 0.35rem;
 }

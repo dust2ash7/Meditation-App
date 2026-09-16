@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#080a09">
+  <meta name="theme-color" content="#100d18">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Stillpoint by Raven Flock — a quiet meditation space for timed sits, box breathing, and wind-down. Free to use. Tips keep it alive.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,12 +12,13 @@
   <title>Stillpoint — Raven Flock</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="icon" href="./icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=11">
-  <link rel="stylesheet" href="./brand.css?v=11">
+  <link rel="stylesheet" href="./style.css?v=12">
+  <link rel="stylesheet" href="./brand.css?v=12">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -38,8 +39,14 @@
         </span>
       </a>
       <div class="topbar-actions">
-        <a class="text-btn tip-btn" id="tip-btn-top" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Tip</a>
-        <button type="button" class="text-btn" id="install-btn" hidden>Install</button>
+        <a class="text-btn tip-btn tip-btn-icon" id="tip-btn-top" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer" aria-label="Tip">Tip</a>
+        <details class="topbar-more">
+          <summary class="icon-btn topbar-more-summary" aria-label="More">⋯</summary>
+          <div class="topbar-more-panel">
+            <button type="button" class="text-btn" id="install-btn" hidden>Install</button>
+            <p class="hint a2hs-tip" id="a2hs-tip" hidden role="status">On iPhone: tap Share, then Add to Home Screen.</p>
+          </div>
+        </details>
         <button type="button" class="icon-btn" id="mute-btn" aria-pressed="false" aria-label="Mute">
           <span class="icon-mute" aria-hidden="true"></span>
         </button>
@@ -86,19 +93,24 @@
             <span>Or minutes</span>
             <input type="number" id="custom-minutes" min="1" max="180" inputmode="numeric" placeholder="—" aria-describedby="custom-hint">
           </label>
-          <p class="hint" id="custom-hint">Leave blank to use the chips. Open counts up until you end.</p>
+          <p class="hint" id="custom-hint">Shown with Open. Counts up until you end — or enter minutes here.</p>
         </fieldset>
         <fieldset class="chooser sound-chooser">
           <legend>Sound</legend>
           <div class="sound-row" id="sound-row-home" role="group" aria-label="Soundscape">
             <button type="button" class="sound-chip-btn is-on" data-sound="soft">Soft</button>
-            <button type="button" class="sound-chip-btn" data-sound="white">White</button>
-            <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
-            <button type="button" class="sound-chip-btn" data-sound="fall">Rainfall</button>
-            <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
-            <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
+            <details class="sound-more">
+              <summary class="sound-chip-btn sound-more-summary">More</summary>
+              <div class="sound-more-panel" role="group" aria-label="More soundscapes">
+                <button type="button" class="sound-chip-btn" data-sound="white">White</button>
+                <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
+                <button type="button" class="sound-chip-btn" data-sound="fall">Deep rain</button>
+                <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
+                <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
+              </div>
+            </details>
           </div>
-          <p class="hint">Soft is the practice bed. The others are generated in the browser — no extra files.</p>
+          <p class="hint">Soft is the practice bed. More opens quiet browser-made beds — no extra files.</p>
         </fieldset>
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
         <dl class="home-stats" aria-label="Your practice">
@@ -118,17 +130,10 @@
         </div>
         <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Settle</p>
         <p class="session-hint" id="session-hint">Follow the light</p>
-        <div class="sound-row sound-row-session" id="sound-row-session" role="group" aria-label="Soundscape">
-          <button type="button" class="sound-chip-btn is-on" data-sound="soft">Soft</button>
-          <button type="button" class="sound-chip-btn" data-sound="white">White</button>
-          <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
-          <button type="button" class="sound-chip-btn" data-sound="fall">Rainfall</button>
-          <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
-          <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
-        </div>
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
           <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
+          <span class="session-sound-name" id="session-sound-name">Soft</span>
           <button type="button" class="ghost-btn danger" id="stop-btn">Stop</button>
         </div>
       </section>
@@ -137,8 +142,8 @@
         <h2 id="complete-title">Well held.</h2>
         <p class="complete-meta" id="complete-meta">10 minutes · Timed sit</p>
         <p class="complete-streak" id="complete-streak"></p>
-        <a class="primary-btn tip-btn tip-btn-block" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Leave a tip</a>
-        <button type="button" class="ghost-btn" id="home-btn">Return home</button>
+        <button type="button" class="primary-btn" id="home-btn">Return home</button>
+        <a class="text-btn tip-btn tip-btn-block" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Leave a tip</a>
       </section>
     </main>
     <footer class="site-foot">
@@ -190,8 +195,8 @@
       <p class="history-empty" id="history-empty">No sittings yet. Begin when you are ready.</p>
     </div>
   </div>
-  <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="auto"></audio>
-  <script src="./sounds.js?v=11" defer></script>
-  <script src="./script.js?v=11" defer></script>
+  <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="none"></audio>
+  <script src="./sounds.js?v=12" defer></script>
+  <script src="./script.js?v=12" defer></script>
 </body>
 </html>
