@@ -1,4 +1,4 @@
-const CACHE = "stillpoint-v11";
+const CACHE = "stillpoint-v12";
 const SHELL = [
   "./",
   "./index.html",
@@ -7,12 +7,10 @@ const SHELL = [
   "./sounds.js",
   "./script.js",
   "./manifest.json",
-  "./icon.svg"
-];
-const OPTIONAL_AUDIO = [
-  "./audio/stillpoint-sit.mp3",
-  "./audio/stillpoint-box.mp3",
-  "./audio/stillpoint-wind.mp3"
+  "./icon.svg",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./apple-touch-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
@@ -20,9 +18,6 @@ self.addEventListener("install", (event) => {
     (async () => {
       const cache = await caches.open(CACHE);
       await cache.addAll(SHELL);
-      for (const url of OPTIONAL_AUDIO) {
-        try { await cache.add(url); } catch (err) {}
-      }
       self.skipWaiting();
     })()
   );

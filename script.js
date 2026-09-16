@@ -129,6 +129,8 @@
     sessionActive: false,
     bellArmed: false,
     installEvent: null,
+    iosA2hs: false,
+    wakeLock: null,
     calYear: new Date().getFullYear(),
     calMonth: new Date().getMonth(),
     selectedDay: todayKey()
@@ -184,6 +186,40 @@
 
   function audioSrcFor(type) {
     return AUDIO_BY_MODE[type] || AUDIO_BY_MODE.sit;
+  }
+
+  async function requestWakeLock() {
+    if (!("wakeLock" in navigator) || typeof navigator.wakeLock.request !== "function") return;
+    try {
+      if (state.wakeLock) {
+        try { await state.wakeLock.release(); } catch {}
+        state.wakeLock = null;
+      }
+      const lock = await navigator.wakeLock.request("screen");
+      state.wakeLock = lock;
+      lock.addEventListener("release", () => {
+        if (state.wakeLock === lock) state.wakeLock = null;
+      });
+    } catch {
+      state.wakeLock = null;
+    }
+  }
+
+  async function releaseWakeLock() {
+    const lock = state.wakeLock;
+    state.wakeLock = null;
+    if (!lock) return;
+    try { await lock.release(); } catch {}
+  }
+
+  function lazyCacheAudio(url) {
+    if (!url || !("caches" in window)) return;
+    const abs = new URL(url, window.location.href).href;
+    caches.open("stillpoint-v12").then(async (cache) => {
+      const hit = await cache.match(abs, { ignoreSearch: true });
+      if (hit) return;
+      try { await cache.add(abs); } catch {}
+    }).catch(() => {});
   }
 
   function computeStreak(history) {
@@ -585,12 +621,19 @@
     updateSoundscapeVolume();
     if (play && state.musicEnabled) {
       const p = els.soundscape.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
+      if (p && typeof p.then === "function") {
+        p.then(() => lazyCacheAudio(src)).catch(() => {});
+      } else {
+        lazyCacheAudio(src);
+      }
     }
   }
 
   function ensureAudioReady() {
-    applyModeAudio(state.type || selectedType(), { reset: false, play: false });
+    // Soft bed loads on Begin; keep src pointed at Soft default without forcing a network fetch.
+    if (!els.soundscape.getAttribute("src")) {
+      els.soundscape.src = AUDIO_BY_MODE.sit;
+    }
   }
 
   function updateSoundscapeVolume() {
@@ -701,6 +744,7 @@
     schedulePhases();
     startAudioFromGesture(true);
     startTicking();
+    requestWakeLock();
   }
 
   function pauseSession() {
@@ -709,6 +753,7 @@
     clearTimers();
     stopSoundscapeFade();
     pauseAudio(false);
+    releaseWakeLock();
     document.body.classList.remove("is-running");
     els.pause.textContent = "Resume";
     els.pause.setAttribute("aria-pressed", "true");
@@ -726,6 +771,7 @@
     startAudioFromGesture(false);
     updateSoundscapeVolume();
     startTicking();
+    requestWakeLock();
   }
 
   function resetToConfiguredTime() {
@@ -736,10 +782,16 @@
 
   function stopSession() {
     const elapsed = state.elapsed;
+    // Open sits lasting ≥15s end via complete path: chime, completed:true, streak-eligible.
+    if (state.isOpen && elapsed >= MIN_LOG_SECONDS) {
+      completeSession(true);
+      return;
+    }
     clearTimers();
     state.sessionActive = false;
     stopSoundscapeFade();
     pauseAudio(true);
+    releaseWakeLock();
     document.body.classList.remove(
       "is-running", "is-sit", "is-box", "is-wind",
       "phase-inhale", "phase-exhale", "phase-hold-in", "phase-hold-out"
@@ -747,7 +799,8 @@
     state.status = "idle";
     setView("home");
     resetToConfiguredTime();
-    if (elapsed >= MIN_LOG_SECONDS) logSession(false, elapsed);
+    // Timed early-stop: log incomplete (not streak-eligible). Short Open discards.
+    if (!state.isOpen && elapsed >= MIN_LOG_SECONDS) logSession(false, elapsed);
     renderStats();
   }
 
@@ -775,6 +828,7 @@
     state.sessionActive = false;
     stopSoundscapeFade();
     pauseAudio(true);
+    releaseWakeLock();
     state.status = "complete";
     document.body.classList.remove("is-running");
     if (natural) playEndBell();
@@ -859,8 +913,12 @@
   function onModeChange() {
     const type = selectedType();
     state.type = type;
-    if (state.status === "idle" || state.status === "complete") {
-      applyModeAudio(type, { reset: false, play: false });
+    // Defer bed fetch until Begin; only retarget src so Soft/mode bed loads on play.
+    if ((state.status === "idle" || state.status === "complete") && !isSynthKind(state.soundId)) {
+      const src = audioSrcFor(type);
+      if ((els.soundscape.getAttribute("src") || "") !== src) {
+        els.soundscape.src = src;
+      }
     }
   }
 
@@ -913,6 +971,9 @@
       });
     }
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", () => {
+      releaseWakeLock();
+    });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !els.historySheet.hidden) {
         closeHistory();
@@ -931,15 +992,40 @@
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       state.installEvent = event;
+      state.iosA2hs = false;
+      const tip = document.getElementById("a2hs-tip");
+      if (tip) tip.hidden = true;
       els.install.hidden = false;
     });
     els.install.addEventListener("click", async () => {
-      if (!state.installEvent) return;
-      state.installEvent.prompt();
-      await state.installEvent.userChoice.catch(() => {});
-      state.installEvent = null;
-      els.install.hidden = true;
+      if (state.installEvent) {
+        state.installEvent.prompt();
+        await state.installEvent.userChoice.catch(() => {});
+        state.installEvent = null;
+        els.install.hidden = true;
+        return;
+      }
+      if (state.iosA2hs) {
+        const tip = document.getElementById("a2hs-tip");
+        if (tip) {
+          tip.hidden = false;
+          tip.textContent = "On iPhone: tap Share, then Add to Home Screen.";
+        }
+      }
     });
+    // iOS / no beforeinstallprompt: offer calm A2HS guidance instead of hiding Install forever.
+    window.setTimeout(() => {
+      if (state.installEvent) return;
+      const standalone = window.matchMedia("(display-mode: standalone)").matches
+        || navigator.standalone === true;
+      if (standalone) return;
+      const ua = navigator.userAgent || "";
+      const ios = /iPad|iPhone|iPod/.test(ua)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (!ios) return;
+      state.iosA2hs = true;
+      els.install.hidden = false;
+    }, 800);
   }
 
   function registerWorker() {

@@ -925,3 +925,22 @@ body.is-session .home-hero,
     opacity: 0.3;
   }
 }
+
+
+/* Launch P0: calm iOS A2HS guidance */
+.topbar-actions { position: relative; }
+.a2hs-tip {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  max-width: 16rem;
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.65rem;
+  background: rgba(16, 13, 24, 0.92);
+  border: 1px solid rgba(196, 165, 116, 0.22);
+  color: #e8e0d4;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  z-index: 20;
+}
