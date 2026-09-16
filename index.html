@@ -39,9 +39,14 @@
         </span>
       </a>
       <div class="topbar-actions">
-        <a class="text-btn tip-btn" id="tip-btn-top" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Tip</a>
-        <button type="button" class="text-btn" id="install-btn" hidden>Install</button>
-        <p class="hint a2hs-tip" id="a2hs-tip" hidden role="status">On iPhone: tap Share, then Add to Home Screen.</p>
+        <a class="text-btn tip-btn tip-btn-icon" id="tip-btn-top" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer" aria-label="Tip">Tip</a>
+        <details class="topbar-more">
+          <summary class="icon-btn topbar-more-summary" aria-label="More">⋯</summary>
+          <div class="topbar-more-panel">
+            <button type="button" class="text-btn" id="install-btn" hidden>Install</button>
+            <p class="hint a2hs-tip" id="a2hs-tip" hidden role="status">On iPhone: tap Share, then Add to Home Screen.</p>
+          </div>
+        </details>
         <button type="button" class="icon-btn" id="mute-btn" aria-pressed="false" aria-label="Mute">
           <span class="icon-mute" aria-hidden="true"></span>
         </button>
@@ -88,19 +93,24 @@
             <span>Or minutes</span>
             <input type="number" id="custom-minutes" min="1" max="180" inputmode="numeric" placeholder="—" aria-describedby="custom-hint">
           </label>
-          <p class="hint" id="custom-hint">Leave blank to use the chips. Open counts up until you end.</p>
+          <p class="hint" id="custom-hint">Shown with Open. Counts up until you end — or enter minutes here.</p>
         </fieldset>
         <fieldset class="chooser sound-chooser">
           <legend>Sound</legend>
           <div class="sound-row" id="sound-row-home" role="group" aria-label="Soundscape">
             <button type="button" class="sound-chip-btn is-on" data-sound="soft">Soft</button>
-            <button type="button" class="sound-chip-btn" data-sound="white">White</button>
-            <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
-            <button type="button" class="sound-chip-btn" data-sound="fall">Rainfall</button>
-            <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
-            <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
+            <details class="sound-more">
+              <summary class="sound-chip-btn sound-more-summary">More</summary>
+              <div class="sound-more-panel" role="group" aria-label="More soundscapes">
+                <button type="button" class="sound-chip-btn" data-sound="white">White</button>
+                <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
+                <button type="button" class="sound-chip-btn" data-sound="fall">Deep rain</button>
+                <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
+                <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
+              </div>
+            </details>
           </div>
-          <p class="hint">Soft is the practice bed. The others are generated in the browser — no extra files.</p>
+          <p class="hint">Soft is the practice bed. More opens quiet browser-made beds — no extra files.</p>
         </fieldset>
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
         <dl class="home-stats" aria-label="Your practice">
@@ -120,17 +130,10 @@
         </div>
         <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Settle</p>
         <p class="session-hint" id="session-hint">Follow the light</p>
-        <div class="sound-row sound-row-session" id="sound-row-session" role="group" aria-label="Soundscape">
-          <button type="button" class="sound-chip-btn is-on" data-sound="soft">Soft</button>
-          <button type="button" class="sound-chip-btn" data-sound="white">White</button>
-          <button type="button" class="sound-chip-btn" data-sound="rain">Rain</button>
-          <button type="button" class="sound-chip-btn" data-sound="fall">Rainfall</button>
-          <button type="button" class="sound-chip-btn" data-sound="shore">Beach</button>
-          <button type="button" class="sound-chip-btn" data-sound="wild">Nature</button>
-        </div>
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
           <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
+          <span class="session-sound-name" id="session-sound-name">Soft</span>
           <button type="button" class="ghost-btn danger" id="stop-btn">Stop</button>
         </div>
       </section>
@@ -139,8 +142,8 @@
         <h2 id="complete-title">Well held.</h2>
         <p class="complete-meta" id="complete-meta">10 minutes · Timed sit</p>
         <p class="complete-streak" id="complete-streak"></p>
-        <a class="primary-btn tip-btn tip-btn-block" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Leave a tip</a>
-        <button type="button" class="ghost-btn" id="home-btn">Return home</button>
+        <button type="button" class="primary-btn" id="home-btn">Return home</button>
+        <a class="text-btn tip-btn tip-btn-block" href="https://www.buymeacoffee.com/nrsteward" target="_blank" rel="noopener noreferrer">Leave a tip</a>
       </section>
     </main>
     <footer class="site-foot">

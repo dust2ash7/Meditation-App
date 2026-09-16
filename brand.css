@@ -139,8 +139,118 @@ a.primary-btn {
   font-size: 0.82rem;
 }
 
-@media (max-width: 420px) {
-  .topbar-actions .tip-btn {
-    padding-inline: 0.7rem;
+/* Soft + More popover */
+.sound-more {
+  position: relative;
+}
+
+.sound-more-summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.sound-more-summary::-webkit-details-marker { display: none; }
+
+.sound-more-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+  width: 100%;
+}
+
+.sound-more:not([open]) .sound-more-panel {
+  display: none;
+}
+
+.sound-more[open] .sound-more-summary {
+  border-color: var(--line-strong);
+  color: var(--gold-bright);
+}
+
+/* Topbar overflow: desktop shows Install inline; mobile behind ⋯ */
+.topbar-more {
+  position: relative;
+}
+
+.topbar-more-summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.topbar-more-summary::-webkit-details-marker { display: none; }
+
+.topbar-more-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+@media (min-width: 421px) {
+  .topbar-more {
+    display: contents;
+  }
+  .topbar-more > summary {
+    display: none;
+  }
+  .topbar-more-panel {
+    display: contents;
   }
 }
+
+@media (max-width: 420px) {
+  .brand-house {
+    display: none;
+  }
+  .brand-product {
+    font-size: 0.92rem;
+    letter-spacing: 0.08em;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+  .brand-lockup {
+    gap: 0.45rem;
+  }
+  .topbar-actions {
+    gap: 0.28rem;
+  }
+  .topbar-actions .tip-btn-icon {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+    font-size: 0;
+    display: inline-grid;
+    place-items: center;
+  }
+  .topbar-actions .tip-btn-icon::before {
+    content: "✦";
+    font-size: 0.95rem;
+    color: var(--gold);
+  }
+  .topbar-actions #history-btn {
+    padding-inline: 0.7rem;
+  }
+  .topbar-more:not([open]) .topbar-more-panel {
+    display: none;
+  }
+  .topbar-more[open] .topbar-more-panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    min-width: 9.5rem;
+    padding: 0.45rem;
+    border-radius: 0.75rem;
+    background: rgba(16, 13, 24, 0.96);
+    border: 1px solid rgba(196, 165, 116, 0.22);
+    z-index: 30;
+  }
+  .topbar-more[open] #install-btn {
+    width: 100%;
+  }
+}
+

@@ -380,12 +380,26 @@
     return Math.max(0, state.remaining) / 30;
   }
 
+  const SOUND_LABELS = {
+    soft: "Soft",
+    white: "White",
+    rain: "Rain",
+    fall: "Deep rain",
+    shore: "Beach",
+    wild: "Nature"
+  };
+
   function syncSoundChoice() {
-    document.querySelectorAll(".sound-chip-btn").forEach((btn) => {
+    document.querySelectorAll(".sound-chip-btn[data-sound]").forEach((btn) => {
       const on = btn.dataset.sound === state.soundId;
       btn.classList.toggle("is-on", on);
       btn.setAttribute("aria-pressed", String(on));
     });
+    const nameEl = document.getElementById("session-sound-name");
+    if (nameEl) nameEl.textContent = SOUND_LABELS[state.soundId] || "Soft";
+    // Keep More open if a synth is selected so the active chip stays visible.
+    const more = document.querySelector("#sound-row-home .sound-more");
+    if (more && state.soundId !== "soft") more.open = true;
   }
 
   function syncMusicButtons() {
