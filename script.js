@@ -225,7 +225,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v16").then(async (cache) => {
+    caches.open("stillpoint-v17").then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
@@ -407,9 +407,6 @@
     });
     const nameEl = document.getElementById("session-sound-name");
     if (nameEl) nameEl.textContent = SOUND_LABELS[state.soundId] || "Soft";
-    // Keep More open if a synth is selected so the active chip stays visible.
-    const more = document.querySelector("#sound-row-home .sound-more");
-    if (more && state.soundId !== "soft") more.open = true;
   }
 
   function syncMusicButtons() {
@@ -972,7 +969,7 @@
     document.querySelectorAll('input[name="session-type"]').forEach((input) => {
       input.addEventListener("change", onModeChange);
     });
-    document.querySelectorAll(".sound-chip-btn").forEach((btn) => {
+    document.querySelectorAll(".sound-chip-btn[data-sound]").forEach((btn) => {
       btn.addEventListener("click", () => setSound(btn.dataset.sound));
     });
     els.customMinutes.addEventListener("input", () => {
