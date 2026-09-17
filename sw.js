@@ -8,9 +8,14 @@ const SHELL = [
   "./script.js",
   "./manifest.json",
   "./icon.svg",
+  "./favicon-32.png",
   "./icon-192.png",
   "./icon-512.png",
-  "./apple-touch-icon.png"
+  "./icon-192-maskable.png",
+  "./icon-512-maskable.png",
+  "./apple-touch-icon.png",
+  "./assets/brand/raven-flock-mark-only.svg",
+  "./assets/brand/raven-flock-logo-b.compact.svg"
 ];
 
 self.addEventListener("install", (event) => {
