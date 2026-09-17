@@ -215,7 +215,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v12").then(async (cache) => {
+    caches.open("stillpoint-v14").then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
