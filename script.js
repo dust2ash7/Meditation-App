@@ -225,7 +225,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v18").then(async (cache) => {
+    caches.open("stillpoint-v19").then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
@@ -1055,7 +1055,7 @@
 
   function registerWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("./sw.js?v=18").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=19").catch(() => {});
   }
 
   function init() {
