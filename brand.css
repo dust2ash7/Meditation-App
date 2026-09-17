@@ -254,3 +254,18 @@ a.primary-btn {
   }
 }
 
+
+/* Raven Flock v4 splash (B seal) — home hero */
+.splash-mark {
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+}
+
+.brand-mark,
+.foot-mark {
+  object-fit: contain;
+  background: transparent;
+}
