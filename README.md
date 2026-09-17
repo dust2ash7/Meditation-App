@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="brand/logo-c.png" alt="Raven Flock" width="280" />
+</p>
+
+<p align="center"><strong>Raven Flock — Consider the ravens.</strong></p>
+
+---
+
 # Stillpoint
 
 A quiet meditation PWA from **Raven Flock**. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts. Tips optional.
