@@ -1,4 +1,4 @@
-const CACHE = "stillpoint-v18";
+const CACHE = "stillpoint-v19";
 const SHELL = [
   "./",
   "./index.html",
@@ -7,15 +7,13 @@ const SHELL = [
   "./sounds.js",
   "./script.js",
   "./manifest.json",
-  "./icon.svg",
   "./favicon-32.png",
   "./icon-192.png",
   "./icon-512.png",
   "./icon-192-maskable.png",
   "./icon-512-maskable.png",
   "./apple-touch-icon.png",
-  "./assets/brand/raven-flock-mark-only.svg",
-  "./assets/brand/raven-flock-logo-b.compact.svg"
+  "./brand/logo-a.png",
 ];
 
 self.addEventListener("install", (event) => {
