@@ -7,6 +7,11 @@
     box: "./audio/stillpoint-box.mp3",
     wind: "./audio/stillpoint-wind.mp3"
   };
+  // File beds for Nature (wild) and Beach (shore); Soft still uses AUDIO_BY_MODE.
+  const AUDIO_BY_SOUND = {
+    wild: "./audio/stillpoint-wild.mp3",
+    shore: "./audio/stillpoint-shore.mp3"
+  };
   const SOUND_KINDS = ["soft", "white", "rain", "fall", "shore", "wild"];
   const MUSIC_VOL = 0.32;
   const BELL_VOL = 0.72;
@@ -188,6 +193,11 @@
     return AUDIO_BY_MODE[type] || AUDIO_BY_MODE.sit;
   }
 
+  function soundscapeSrcFor(soundId, type) {
+    if (soundId === "wild" || soundId === "shore") return AUDIO_BY_SOUND[soundId];
+    return audioSrcFor(type);
+  }
+
   async function requestWakeLock() {
     if (!("wakeLock" in navigator) || typeof navigator.wakeLock.request !== "function") return;
     try {
@@ -215,7 +225,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v14").then(async (cache) => {
+    caches.open("stillpoint-v15").then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
@@ -436,7 +446,8 @@
       return;
     }
     if (e) e.stop();
-    applyModeAudio(state.type, { reset, play });
+    // soft → mode beds; wild/shore → Nature/Beach file beds (mirror Soft HTMLAudio path)
+    applyBedAudio(soundscapeSrcFor(state.soundId, state.type), { reset, play });
   }
 
   function setSound(id) {
@@ -618,8 +629,7 @@
     });
   }
 
-  function applyModeAudio(type, { reset = false, play = false } = {}) {
-    const src = audioSrcFor(type);
+  function applyBedAudio(src, { reset = false, play = false } = {}) {
     const current = els.soundscape.getAttribute("src") || "";
     const needsSwap = current !== src;
     if (needsSwap || reset) {
@@ -641,6 +651,10 @@
         lazyCacheAudio(src);
       }
     }
+  }
+
+  function applyModeAudio(type, { reset = false, play = false } = {}) {
+    applyBedAudio(audioSrcFor(type), { reset, play });
   }
 
   function ensureAudioReady() {
@@ -927,9 +941,9 @@
   function onModeChange() {
     const type = selectedType();
     state.type = type;
-    // Defer bed fetch until Begin; only retarget src so Soft/mode bed loads on play.
+    // Defer bed fetch until Begin; retarget Soft/mode or Nature/Beach src without forcing a fetch.
     if ((state.status === "idle" || state.status === "complete") && !isSynthKind(state.soundId)) {
-      const src = audioSrcFor(type);
+      const src = soundscapeSrcFor(state.soundId, type);
       if ((els.soundscape.getAttribute("src") || "") !== src) {
         els.soundscape.src = src;
       }

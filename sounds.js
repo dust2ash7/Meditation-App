@@ -196,7 +196,8 @@
 
   function start(nextKind) {
     kind = nextKind || kind;
-    if (kind === "soft" || !enabled) {
+    // soft / shore / wild use HTMLAudio file beds in script.js — no synth.
+    if (kind === "soft" || kind === "shore" || kind === "wild" || !enabled) {
       stopAll();
       return;
     }
@@ -206,8 +207,6 @@
     if (kind === "white") startWhite();
     else if (kind === "rain") startRain(false);
     else if (kind === "fall") startRain(true);
-    else if (kind === "shore") startShore();
-    else if (kind === "wild") startWild();
     else running = false;
     setOutput(1, muted);
   }
@@ -219,14 +218,14 @@
     setKind(next) {
       if (next === kind && running) return;
       kind = next;
-      if (next === "soft") stopAll();
+      if (next === "soft" || next === "shore" || next === "wild") stopAll();
       else start(next);
     },
     getKind() { return kind; },
     setEnabled(on) {
       enabled = Boolean(on);
       if (!enabled) stopAll();
-      else if (kind !== "soft") start(kind);
+      else if (kind !== "soft" && kind !== "shore" && kind !== "wild") start(kind);
     },
     setMuted(on) {
       muted = Boolean(on);
@@ -241,7 +240,8 @@
       if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
     },
     isSynth(id) {
-      return id && id !== "soft";
+      // File beds: soft (mode), wild (Nature), shore (Beach). Synth: white/rain/fall.
+      return id === "white" || id === "rain" || id === "fall";
     }
   };
 })();
