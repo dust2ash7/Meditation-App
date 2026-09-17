@@ -130,42 +130,18 @@ a.primary-btn {
 
 .sound-row-session {
   justify-content: center;
-  margin: 0 0 1.15rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.35rem 0 1rem;
+  max-width: 28rem;
+  margin-inline: auto;
 }
 
 .sound-row-session .sound-chip-btn {
-  min-height: 36px;
-  padding: 0 0.75rem;
-  font-size: 0.82rem;
-}
-
-/* Soft + More popover */
-.sound-more {
-  position: relative;
-}
-
-.sound-more-summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.sound-more-summary::-webkit-details-marker { display: none; }
-
-.sound-more-panel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 0.55rem;
-  width: 100%;
-}
-
-.sound-more:not([open]) .sound-more-panel {
-  display: none;
-}
-
-.sound-more[open] .sound-more-summary {
-  border-color: var(--line-strong);
-  color: var(--gold-bright);
+  min-height: 34px;
+  padding: 0 0.7rem;
+  font-size: 0.8rem;
 }
 
 /* Topbar overflow: desktop shows Install inline; mobile behind ⋯ */
