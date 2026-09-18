@@ -2,6 +2,7 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
+  const CACHE_ID = "stillpoint-v20";
   const AUDIO_BY_MODE = {
     sit: "./audio/stillpoint-sit.mp3",
     box: "./audio/stillpoint-box.mp3",
@@ -138,7 +139,8 @@
     wakeLock: null,
     calYear: new Date().getFullYear(),
     calMonth: new Date().getMonth(),
-    selectedDay: todayKey()
+    selectedDay: todayKey(),
+    sessionMeta: null
   };
 
   function defaultStore() {
@@ -225,7 +227,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v19").then(async (cache) => {
+    caches.open("stillpoint-v20").then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
@@ -333,6 +335,7 @@
       if (!unlocked.has(id)) {
         unlocked.add(id);
         changed = true;
+        track("badge_unlock", { badge_id: id });
       }
     });
     if (changed) return saveStore({ badges: [...unlocked] });
@@ -360,6 +363,27 @@
     const value = node ? Number(node.value) : 10;
     if (value === 0) return { minutes: 0, isOpen: true };
     return { minutes: value, isOpen: false };
+  }
+
+
+  function durationKindMeta() {
+    const customRaw = els.customMinutes ? els.customMinutes.value : "";
+    const custom = Number.parseInt(customRaw, 10);
+    if (customRaw !== "" && Number.isFinite(custom) && custom >= 1) {
+      return { duration_kind: "custom", duration_min: Math.min(180, custom) };
+    }
+    const node = document.querySelector('input[name="duration"]:checked');
+    const value = node ? Number(node.value) : 10;
+    if (value === 0) return { duration_kind: "open", duration_min: null };
+    return { duration_kind: "preset", duration_min: value };
+  }
+
+  function track(event, props) {
+    try {
+      if (window.posthog && typeof window.posthog.capture === "function") {
+        window.posthog.capture(event, props || {});
+      }
+    } catch (_) {}
   }
 
   function renderConfiguredTime() {
@@ -747,9 +771,11 @@
 
   function beginSession() {
     const { minutes, isOpen } = selectedDuration();
+    const meta = durationKindMeta();
     state.type = selectedType();
     state.durationMinutes = minutes;
     state.isOpen = isOpen;
+    state.sessionMeta = meta;
     state.elapsed = 0;
     state.remaining = isOpen ? 0 : minutes * 60;
     state.phaseIndex = 0;
@@ -757,6 +783,11 @@
     state.hiddenWhileRunning = false;
     state.sessionActive = true;
     state.bellArmed = true;
+    track("session_start", {
+      mode: state.type,
+      duration_kind: meta.duration_kind,
+      duration_min: meta.duration_min
+    });
     document.body.classList.add("is-running");
     els.kicker.textContent = TYPES[state.type].label;
     els.hint.textContent = TYPES[state.type].hint;
@@ -829,7 +860,7 @@
     renderStats();
   }
 
-  function logSession(completed, elapsedSeconds) {
+  function logSession(completed, elapsedSeconds, natural) {
     const minutes = Math.max(1, Math.round(elapsedSeconds / 60));
     const store = loadStore();
     store.history.push({
@@ -840,6 +871,15 @@
       completed,
       isOpen: state.isOpen,
       at: Date.now()
+    });
+    const meta = state.sessionMeta || durationKindMeta();
+    track("session_end", {
+      outcome: completed ? "completed" : "abandoned",
+      mode: state.type,
+      duration_kind: meta.duration_kind,
+      duration_min: meta.duration_min,
+      elapsed_sec: Math.max(0, Math.floor(elapsedSeconds)),
+      natural: Boolean(natural)
     });
     let next = saveStore({ history: store.history });
     next = evaluateBadges(next);
@@ -861,7 +901,7 @@
       ? Math.max(1, Math.round(elapsed / 60) || (elapsed > 0 ? 1 : 0))
       : state.durationMinutes;
     if (elapsed >= MIN_LOG_SECONDS || natural) {
-      logSession(true, Math.max(elapsed, state.isOpen ? elapsed : state.durationMinutes * 60));
+      logSession(true, Math.max(elapsed, state.isOpen ? elapsed : state.durationMinutes * 60), natural);
     }
     const store = loadStore();
     const streak = computeStreak(store.history);
@@ -1055,7 +1095,7 @@
 
   function registerWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("./sw.js?v=19").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=20").catch(() => {});
   }
 
   function init() {
@@ -1072,6 +1112,7 @@
     renderStats();
     bind();
     registerWorker();
+    track("app_open", { app_version: CACHE_ID });
   }
 
   if (document.readyState === "loading") {
