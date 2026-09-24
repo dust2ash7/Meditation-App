@@ -6,7 +6,9 @@
 
   let userScale = 1;
   let lastRequested = 0.32;
+  let lastFade = 1;
   let applying = false;
+  let rawSetFade = null;
 
   function loadPrefs() {
     try {
@@ -56,10 +58,7 @@
       volDesc.set.call(audio, clamp01(lastRequested * userScale));
       applying = false;
     }
-    const engine = window.StillpointSound;
-    if (engine && typeof engine.setFade === "function") {
-      engine.setFade(userScale);
-    }
+    if (rawSetFade) rawSetFade(clamp01(lastFade * userScale));
   }
 
   function wrapAudioVolume() {
@@ -87,8 +86,11 @@
   function wrapSynthFade() {
     const engine = window.StillpointSound;
     if (!engine || typeof engine.setFade !== "function" || engine.__stillpointVolWrap) return;
-    const orig = engine.setFade.bind(engine);
-    engine.setFade = (t) => orig(clamp01(Number(t) * userScale));
+    rawSetFade = engine.setFade.bind(engine);
+    engine.setFade = (t) => {
+      lastFade = Number(t);
+      rawSetFade(clamp01(lastFade * userScale));
+    };
     engine.__stillpointVolWrap = true;
   }
 
