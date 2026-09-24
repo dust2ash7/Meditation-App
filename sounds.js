@@ -2,7 +2,8 @@
   "use strict";
 
   const VOL = {
-    white: 0.18,
+    white: 0.22,
+    tone: 0.045,
     rain: 0.22,
     fall: 0.26,
     shore: 0.2,
@@ -10,6 +11,8 @@
   };
 
   const FILE_KINDS = new Set(["soft", "shore", "wild", "rain", "fall"]);
+  const CARRIER_L = 200;
+  const CARRIER_R = 210;
 
   let ctx = null;
   let master = null;
@@ -33,21 +36,24 @@
     return ctx;
   }
 
-  function noiseBuffer(seconds) {
+  function brownBuffer(seconds) {
     const c = audioCtx();
     const n = Math.floor(c.sampleRate * seconds);
     const buf = c.createBuffer(1, n, c.sampleRate);
     const data = buf.getChannelData(0);
-    let b0 = 0;
-    let b1 = 0;
-    let b2 = 0;
+    let last = 0;
     for (let i = 0; i < n; i += 1) {
       const white = Math.random() * 2 - 1;
-      b0 = 0.99765 * b0 + white * 0.099046;
-      b1 = 0.963 * b1 + white * 0.2965164;
-      b2 = 0.57 * b2 + white * 1.0526913;
-      data[i] = b0 + b1 + b2 + white * 0.1848;
+      last = (last + 0.02 * white) / 1.02;
+      data[i] = last;
     }
+    let peak = 0.0001;
+    for (let i = 0; i < n; i += 1) {
+      const a = Math.abs(data[i]);
+      if (a > peak) peak = a;
+    }
+    const scale = 0.9 / peak;
+    for (let i = 0; i < n; i += 1) data[i] *= scale;
     return buf;
   }
 
@@ -93,14 +99,39 @@
   }
 
   function startWhite() {
-    const buf = noiseBuffer(2);
-    const src = track(sourceFrom(buf));
-    const lp = track(filter("lowpass", 900, 0.7));
-    const g = track(gain(VOL.white));
+    const c = audioCtx();
+    const now = c.currentTime;
+
+    const src = track(sourceFrom(brownBuffer(3)));
+    const lp = track(filter("lowpass", 320, 0.7));
+    const noiseG = track(gain(VOL.white));
     src.connect(lp);
-    lp.connect(g);
-    g.connect(master);
+    lp.connect(noiseG);
+    noiseG.connect(master);
     src.start();
+
+    const lfo = track(c.createOscillator());
+    const lfoG = track(gain(VOL.white * 0.12));
+    lfo.type = "sine";
+    lfo.frequency.value = 10;
+    lfo.connect(lfoG);
+    lfoG.connect(noiseG.gain);
+    lfo.start(now);
+
+    const merge = track(c.createChannelMerger(2));
+    const toneG = track(gain(VOL.tone));
+    const left = track(c.createOscillator());
+    const right = track(c.createOscillator());
+    left.type = "sine";
+    right.type = "sine";
+    left.frequency.value = CARRIER_L;
+    right.frequency.value = CARRIER_R;
+    left.connect(merge, 0, 0);
+    right.connect(merge, 0, 1);
+    merge.connect(toneG);
+    toneG.connect(master);
+    left.start(now);
+    right.start(now);
   }
 
   function setOutput(vol, mute) {
@@ -111,7 +142,6 @@
 
   function start(nextKind) {
     kind = nextKind || kind;
-    // File beds play through HTMLAudio in script.js. Only white stays synth.
     if (FILE_KINDS.has(kind) || !enabled) {
       stopAll();
       return;

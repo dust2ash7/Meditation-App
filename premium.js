@@ -29,6 +29,14 @@
     return Math.max(0, Math.min(1, n));
   }
 
+  function relabelHush() {
+    document.querySelectorAll('[data-sound="white"]').forEach((btn) => {
+      btn.textContent = "Hush";
+    });
+    const nameEl = document.getElementById("session-sound-name");
+    if (nameEl && nameEl.textContent === "White") nameEl.textContent = "Hush";
+  }
+
   function playStartBell() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
@@ -151,10 +159,13 @@
     document.querySelectorAll(".bed-volume").forEach((el) => {
       el.addEventListener("input", () => setScaleFromSlider(el.value));
     });
+    document.querySelectorAll(".sound-chip-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setTimeout(relabelHush, 0));
+    });
     const begin = document.getElementById("begin-btn");
     if (begin) begin.addEventListener("click", playStartBell);
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js?v=23").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=24").catch(() => {});
     }
   }
 
@@ -163,6 +174,7 @@
     wrapSynthFade();
     restorePrefs();
     applyScale();
+    relabelHush();
     bind();
   }
 
