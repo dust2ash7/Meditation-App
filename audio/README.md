@@ -12,7 +12,16 @@ Licenses and source URLs: [`CREDITS.md`](./CREDITS.md).
 | `audio/stillpoint-box.mp3` | Box breathing |
 | `audio/stillpoint-wind.mp3` | Wind-down |
 
-These are the only audio files the app loads. White / rain / rainfall / beach / nature are generated in the browser by `../sounds.js`.
+Also loaded as recorded beds:
+
+| Path | Chip |
+|------|------|
+| `audio/stillpoint-rain.mp3` | Rain |
+| `audio/stillpoint-fall.mp3` | Deep rain |
+| `audio/stillpoint-shore.mp3` | Beach |
+| `audio/stillpoint-wild.mp3` | Nature |
+
+White noise is still generated in the browser by `../sounds.js`.
 
 ## Playback
 
