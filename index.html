@@ -18,8 +18,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=22">
-  <link rel="stylesheet" href="./brand.css?v=22">
+  <link rel="stylesheet" href="./style.css?v=23">
+  <link rel="stylesheet" href="./brand.css?v=23">
+  <link rel="stylesheet" href="./premium.css?v=23">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -60,7 +61,7 @@
           <img class="splash-mark" src="./brand/logo-a.png" width="96" height="96" alt="Raven Flock">
           <p class="eyebrow">A Raven Flock practice</p>
           <h1>A still point<br><em>in the noise.</em></h1>
-          <p class="lede">Sit, box-breathe, or wind down. No account. No paywall. If it helps, a tip keeps Raven Flock building quiet tools.</p>
+          <p class="lede">Sit, box-breathe, or wind down. No account. No paywall.</p>
         </div>
         <fieldset class="chooser">
           <legend>Practice</legend>
@@ -68,17 +69,17 @@
             <label class="type-card">
               <input type="radio" name="session-type" value="sit" checked>
               <span class="type-name">Timed sit</span>
-              <span class="type-copy">Settle and watch the breath. Time passes without asking anything of you.</span>
+              <span class="type-copy">Settle and watch the breath.</span>
             </label>
             <label class="type-card">
               <input type="radio" name="session-type" value="box">
               <span class="type-name">Box breathing</span>
-              <span class="type-copy">Four counts in each direction — inhale, hold, exhale, hold.</span>
+              <span class="type-copy">Four counts: in, hold, out, hold.</span>
             </label>
             <label class="type-card">
               <input type="radio" name="session-type" value="wind">
               <span class="type-name">Wind-down</span>
-              <span class="type-copy">A slower 4–7–8 cadence for the edge of sleep, or the end of a long day.</span>
+              <span class="type-copy">4–7–8 for the edge of sleep.</span>
             </label>
           </div>
         </fieldset>
@@ -107,7 +108,7 @@
             <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
             <button type="button" class="sound-chip-btn" data-sound="wild" aria-pressed="false">Nature</button>
           </div>
-          <p class="hint">Soft is the practice bed. Rain, Deep rain, Beach, and Nature use recordings. White stays browser-made.</p>
+          <p class="hint">Rain and Deep rain are recordings. White is synth. Soft is the practice bed.</p>
         </fieldset>
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
         <dl class="home-stats" aria-label="Your practice">
@@ -115,7 +116,6 @@
           <div><dt>Total</dt><dd id="stat-total">0 min</dd></div>
           <div><dt>Sits</dt><dd id="stat-count">0</dd></div>
         </dl>
-        <p class="house-note">Stillpoint is a Raven Flock app.</p>
       </section>
       <section id="view-session" class="view view-session" data-view="session" hidden>
         <p class="session-kicker" id="session-kicker">Timed sit</p>
@@ -127,18 +127,20 @@
         </div>
         <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Settle</p>
         <p class="session-hint" id="session-hint">Follow the light</p>
-        <div class="sound-row sound-row-session" id="sound-row-session" role="group" aria-label="Soundscape">
-          <button type="button" class="sound-chip-btn is-on" data-sound="soft" aria-pressed="true">Soft</button>
-          <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">White</button>
-          <button type="button" class="sound-chip-btn" data-sound="rain" aria-pressed="false">Rain</button>
-          <button type="button" class="sound-chip-btn" data-sound="fall" aria-pressed="false">Deep rain</button>
-          <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
-          <button type="button" class="sound-chip-btn" data-sound="wild" aria-pressed="false">Nature</button>
-        </div>
+        <details class="session-sound-panel">
+          <summary class="session-sound-summary">Sound · <span id="session-sound-name">Soft</span></summary>
+          <div class="sound-row sound-row-session" id="sound-row-session" role="group" aria-label="Soundscape">
+            <button type="button" class="sound-chip-btn is-on" data-sound="soft" aria-pressed="true">Soft</button>
+            <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">White</button>
+            <button type="button" class="sound-chip-btn" data-sound="rain" aria-pressed="false">Rain</button>
+            <button type="button" class="sound-chip-btn" data-sound="fall" aria-pressed="false">Deep rain</button>
+            <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
+            <button type="button" class="sound-chip-btn" data-sound="wild" aria-pressed="false">Nature</button>
+          </div>
+        </details>
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
           <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
-          <span class="session-sound-name" id="session-sound-name">Soft</span>
           <button type="button" class="ghost-btn danger" id="stop-btn">Stop</button>
         </div>
       </section>
@@ -201,7 +203,8 @@
     </div>
   </div>
   <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="none"></audio>
-  <script src="./sounds.js?v=21" defer></script>
-  <script src="./script.js?v=22" defer></script>
+  <script src="./sounds.js?v=23" defer></script>
+  <script src="./script.js?v=23" defer></script>
+  <script src="./premium.js?v=23" defer></script>
 </body>
 </html>
