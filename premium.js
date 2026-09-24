@@ -2,6 +2,13 @@
   "use strict";
 
   const PREF_KEY = "stillpoint-prefs-v1";
+  const volDesc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "volume");
+
+  let userScale = 1;
+  let lastRequested = 0.32;
+  let lastFade = 1;
+  let applying = false;
+  let rawSetFade = null;
 
   function loadPrefs() {
     try {
@@ -18,6 +25,10 @@
     return next;
   }
 
+  function clamp01(n) {
+    return Math.max(0, Math.min(1, n));
+  }
+
   function playStartBell() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
@@ -32,7 +43,7 @@
     osc.type = "sine";
     osc.frequency.value = 528;
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.28, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.28 * userScale, now + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -40,8 +51,67 @@
     osc.stop(now + 1.45);
   }
 
+  function applyScale() {
+    const audio = document.getElementById("soundscape");
+    if (audio && volDesc && volDesc.set) {
+      applying = true;
+      volDesc.set.call(audio, clamp01(lastRequested * userScale));
+      applying = false;
+    }
+    if (rawSetFade) rawSetFade(clamp01(lastFade * userScale));
+  }
+
+  function wrapAudioVolume() {
+    const audio = document.getElementById("soundscape");
+    if (!audio || !volDesc || audio.__stillpointVolWrap) return;
+    Object.defineProperty(audio, "volume", {
+      configurable: true,
+      get() {
+        return volDesc.get.call(audio);
+      },
+      set(v) {
+        if (applying) {
+          volDesc.set.call(audio, clamp01(v));
+          return;
+        }
+        lastRequested = Number(v);
+        applying = true;
+        volDesc.set.call(audio, clamp01(lastRequested * userScale));
+        applying = false;
+      }
+    });
+    audio.__stillpointVolWrap = true;
+  }
+
+  function wrapSynthFade() {
+    const engine = window.StillpointSound;
+    if (!engine || typeof engine.setFade !== "function" || engine.__stillpointVolWrap) return;
+    rawSetFade = engine.setFade.bind(engine);
+    engine.setFade = (t) => {
+      lastFade = Number(t);
+      rawSetFade(clamp01(lastFade * userScale));
+    };
+    engine.__stillpointVolWrap = true;
+  }
+
+  function setScaleFromSlider(value) {
+    const n = Number(value);
+    userScale = clamp01((Number.isFinite(n) ? n : 100) / 100);
+    savePrefs({ bedVolume: userScale });
+    document.querySelectorAll(".bed-volume").forEach((el) => {
+      el.value = String(Math.round(userScale * 100));
+    });
+    applyScale();
+  }
+
   function restorePrefs() {
     const prefs = loadPrefs();
+    if (typeof prefs.bedVolume === "number") {
+      userScale = clamp01(prefs.bedVolume);
+    }
+    document.querySelectorAll(".bed-volume").forEach((el) => {
+      el.value = String(Math.round(userScale * 100));
+    });
     if (prefs.type) {
       const type = document.querySelector(`input[name="session-type"][value="${prefs.type}"]`);
       if (type) {
@@ -78,15 +148,21 @@
         savePrefs({ custom: Number.isFinite(n) && n >= 1 ? n : "" });
       });
     }
+    document.querySelectorAll(".bed-volume").forEach((el) => {
+      el.addEventListener("input", () => setScaleFromSlider(el.value));
+    });
     const begin = document.getElementById("begin-btn");
     if (begin) begin.addEventListener("click", playStartBell);
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js?v=22").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=23").catch(() => {});
     }
   }
 
   function init() {
+    wrapAudioVolume();
+    wrapSynthFade();
     restorePrefs();
+    applyScale();
     bind();
   }
 

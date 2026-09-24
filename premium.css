@@ -46,6 +46,24 @@
   margin-top: 0.65rem;
 }
 
+.bed-vol {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+.bed-vol span {
+  min-width: 2.4rem;
+}
+.bed-volume {
+  flex: 1;
+  accent-color: #c9b8ff;
+  height: 1.4rem;
+}
+
 body.is-session .tip-btn-icon,
 body.is-session .topbar-more,
 body.is-session #history-btn,

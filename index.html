@@ -18,9 +18,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=23">
-  <link rel="stylesheet" href="./brand.css?v=23">
-  <link rel="stylesheet" href="./premium.css?v=23">
+  <link rel="stylesheet" href="./style.css?v=24">
+  <link rel="stylesheet" href="./brand.css?v=24">
+  <link rel="stylesheet" href="./premium.css?v=24">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -108,6 +108,10 @@
             <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
             <button type="button" class="sound-chip-btn" data-sound="wild" aria-pressed="false">Nature</button>
           </div>
+          <label class="bed-vol">
+            <span>Bed</span>
+            <input type="range" class="bed-volume" min="0" max="100" value="100" step="1" aria-label="Bed volume">
+          </label>
           <p class="hint">Rain and Deep rain are recordings. White is synth. Soft is the practice bed.</p>
         </fieldset>
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
@@ -137,6 +141,10 @@
             <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
             <button type="button" class="sound-chip-btn" data-sound="wild" aria-pressed="false">Nature</button>
           </div>
+          <label class="bed-vol">
+            <span>Bed</span>
+            <input type="range" class="bed-volume" min="0" max="100" value="100" step="1" aria-label="Bed volume">
+          </label>
         </details>
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
@@ -203,8 +211,8 @@
     </div>
   </div>
   <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="none"></audio>
-  <script src="./sounds.js?v=23" defer></script>
-  <script src="./script.js?v=23" defer></script>
-  <script src="./premium.js?v=23" defer></script>
+  <script src="./sounds.js?v=24" defer></script>
+  <script src="./script.js?v=24" defer></script>
+  <script src="./premium.js?v=24" defer></script>
 </body>
 </html>
