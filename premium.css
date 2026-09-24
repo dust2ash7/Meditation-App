@@ -1,0 +1,70 @@
+/* Premium restraint — does not replace style.css */
+
+.view-home .home-hero {
+  margin-bottom: 0.6rem;
+}
+.view-home .splash-mark {
+  width: 64px;
+  height: 64px;
+}
+.view-home .lede {
+  max-width: 28rem;
+  margin-inline: auto;
+  opacity: 0.78;
+}
+.view-home .type-card .type-copy {
+  display: none;
+}
+.view-home .type-card:has(input:checked) .type-copy {
+  display: block;
+  margin-top: 0.35rem;
+}
+.view-home .house-note {
+  opacity: 0.45;
+}
+
+.session-sound-panel {
+  border: 0;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  background: none;
+}
+.session-sound-panel > summary {
+  list-style: none;
+  cursor: pointer;
+  text-align: center;
+}
+.session-sound-panel > summary::-webkit-details-marker {
+  display: none;
+}
+.session-sound-summary {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.session-sound-panel .sound-row-session {
+  margin-top: 0.65rem;
+}
+
+body.is-session .tip-btn-icon,
+body.is-session .topbar-more,
+body.is-session #history-btn,
+body.is-session .site-foot {
+  display: none !important;
+}
+body.is-session .topbar {
+  justify-content: center;
+}
+body.is-session .brand-house {
+  display: none;
+}
+body.is-session .session-hint {
+  opacity: 0.55;
+}
+body.is-session .session-controls .session-sound-name {
+  display: none;
+}
+
+body.is-complete .site-foot {
+  display: none !important;
+}

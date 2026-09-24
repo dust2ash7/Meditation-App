@@ -1,11 +1,13 @@
-const CACHE = "stillpoint-v21";
+const CACHE = "stillpoint-v22";
 const SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./brand.css",
+  "./premium.css",
   "./sounds.js",
   "./script.js",
+  "./premium.js",
   "./manifest.json",
   "./favicon-32.png",
   "./icon-192.png",
