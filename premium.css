@@ -23,27 +23,27 @@
   opacity: 0.45;
 }
 
-.session-sound-panel {
-  border: 0;
-  margin: 0.4rem 0 0;
-  padding: 0;
-  background: none;
-}
-.session-sound-panel > summary {
-  list-style: none;
-  cursor: pointer;
-  text-align: center;
-}
-.session-sound-panel > summary::-webkit-details-marker {
-  display: none;
+.session-sound-dock {
+  width: min(22rem, 100%);
+  margin: 0.35rem auto 0;
 }
 .session-sound-summary {
   font-size: 0.85rem;
   letter-spacing: 0.04em;
   opacity: 0.7;
+  text-align: center;
+  margin: 0 0 0.45rem;
 }
-.session-sound-panel .sound-row-session {
-  margin-top: 0.65rem;
+.view-session .sound-row-session,
+body.is-session .sound-row-session {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.view-session .bed-vol,
+body.is-session .bed-vol {
+  display: flex;
 }
 
 .bed-vol {
@@ -78,9 +78,6 @@ body.is-session .brand-house {
 }
 body.is-session .session-hint {
   opacity: 0.55;
-}
-body.is-session .session-controls .session-sound-name {
-  display: none;
 }
 
 body.is-complete .site-foot {

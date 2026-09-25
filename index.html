@@ -18,9 +18,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=24">
-  <link rel="stylesheet" href="./brand.css?v=24">
-  <link rel="stylesheet" href="./premium.css?v=24">
+  <link rel="stylesheet" href="./style.css?v=25">
+  <link rel="stylesheet" href="./brand.css?v=25">
+  <link rel="stylesheet" href="./premium.css?v=25">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -102,7 +102,7 @@
           <legend>Sound</legend>
           <div class="sound-row" id="sound-row-home" role="group" aria-label="Soundscape">
             <button type="button" class="sound-chip-btn is-on" data-sound="soft" aria-pressed="true">Soft</button>
-            <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">White</button>
+            <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">Hush</button>
             <button type="button" class="sound-chip-btn" data-sound="rain" aria-pressed="false">Rain</button>
             <button type="button" class="sound-chip-btn" data-sound="fall" aria-pressed="false">Deep rain</button>
             <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
@@ -112,7 +112,7 @@
             <span>Bed</span>
             <input type="range" class="bed-volume" min="0" max="100" value="100" step="1" aria-label="Bed volume">
           </label>
-          <p class="hint">Rain and Deep rain are recordings. White is synth. Soft is the practice bed.</p>
+          <p class="hint">Rain and Deep rain are recordings. Hush is the 10 Hz brown bed. Soft is the practice bed.</p>
         </fieldset>
         <button type="button" class="primary-btn" id="begin-btn">Begin</button>
         <dl class="home-stats" aria-label="Your practice">
@@ -131,11 +131,11 @@
         </div>
         <p class="phase" id="phase-label" aria-live="polite" aria-atomic="true">Settle</p>
         <p class="session-hint" id="session-hint">Follow the light</p>
-        <details class="session-sound-panel">
-          <summary class="session-sound-summary">Sound · <span id="session-sound-name">Soft</span></summary>
+        <div class="session-sound-dock">
+          <p class="session-sound-summary"><span id="session-sound-name">Soft</span></p>
           <div class="sound-row sound-row-session" id="sound-row-session" role="group" aria-label="Soundscape">
             <button type="button" class="sound-chip-btn is-on" data-sound="soft" aria-pressed="true">Soft</button>
-            <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">White</button>
+            <button type="button" class="sound-chip-btn" data-sound="white" aria-pressed="false">Hush</button>
             <button type="button" class="sound-chip-btn" data-sound="rain" aria-pressed="false">Rain</button>
             <button type="button" class="sound-chip-btn" data-sound="fall" aria-pressed="false">Deep rain</button>
             <button type="button" class="sound-chip-btn" data-sound="shore" aria-pressed="false">Beach</button>
@@ -145,7 +145,7 @@
             <span>Bed</span>
             <input type="range" class="bed-volume" min="0" max="100" value="100" step="1" aria-label="Bed volume">
           </label>
-        </details>
+        </div>
         <div class="session-controls">
           <button type="button" class="ghost-btn" id="pause-btn" aria-pressed="false">Pause</button>
           <button type="button" class="ghost-btn" id="audio-btn" aria-pressed="true">Soundscape on</button>
@@ -211,8 +211,8 @@
     </div>
   </div>
   <audio id="soundscape" src="./audio/stillpoint-sit.mp3" loop preload="none"></audio>
-  <script src="./sounds.js?v=24" defer></script>
-  <script src="./script.js?v=24" defer></script>
-  <script src="./premium.js?v=24" defer></script>
+  <script src="./sounds.js?v=25" defer></script>
+  <script src="./script.js?v=25" defer></script>
+  <script src="./premium.js?v=25" defer></script>
 </body>
 </html>
