@@ -10,7 +10,7 @@
 
 A quiet meditation PWA from **Raven Flock**. Timed sits, box breathing (4-4-4-4), and a 4-7-8 wind-down. No accounts. Tips optional.
 
-Live: [dust2ash7.github.io/Meditation-App](https://dust2ash7.github.io/Meditation-App/)
+**Live:** [web](https://dust2ash7.github.io/Meditation-App/) · [itch.io](https://dust2ash7.itch.io/stillpoint)
 
 Tip jar: [buymeacoffee.com/nrsteward](https://www.buymeacoffee.com/nrsteward)
 
@@ -37,13 +37,7 @@ Pick a bed on the home screen or mid-sit:
 | **Beach** | Low swell |
 | **Nature** | Low bed + occasional chirps |
 
-Soft uses:
-
-- `./audio/stillpoint-sit.mp3`
-- `./audio/stillpoint-box.mp3`
-- `./audio/stillpoint-wind.mp3`
-
-Sources and licenses are in [`audio/CREDITS.md`](./audio/CREDITS.md). The other chips are synthesized by `sounds.js` — no extra files.
+Soft uses `./audio/stillpoint-sit.mp3`, `stillpoint-box.mp3`, and `stillpoint-wind.mp3`. Sources and licenses: [`audio/CREDITS.md`](./audio/CREDITS.md). Other chips are synthesized by `sounds.js`.
 
 Playback starts from the **Begin** click so browsers allow it. Mute silences the bed and chimes without ending the session.
 
@@ -55,7 +49,7 @@ Streaks count consecutive calendar days with at least one completed sitting. Mis
 
 ## Progressive web app
 
-`manifest.json` uses local `icon.svg` (Raven Flock mark). The service worker is `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative. The app is a static site: HTML, CSS, and JavaScript.
+`manifest.json` uses local `icon.svg` (Raven Flock mark). The service worker is `./sw.js` so GitHub Pages under `/Meditation-App/` works. Cached paths are relative. Static HTML, CSS, and JavaScript — no build step.
 
 ## Accessibility and comfort
 
@@ -67,8 +61,6 @@ Streaks count consecutive calendar days with at least one completed sitting. Mis
 
 ## Run locally
 
-From the repo root:
-
 ```bash
 python3 -m http.server 8080
 ```
@@ -77,4 +69,9 @@ Open `http://localhost:8080`. A service worker needs HTTP(S), not `file://`.
 
 ## Stack
 
-Plain HTML, CSS, and JavaScript. Google Fonts: Fraunces and Figtree, with serif/system fallbacks. No build step, no backend.
+Plain HTML, CSS, and JavaScript. Google Fonts: Fraunces and Figtree, with serif/system fallbacks.
+
+---
+
+Raven Flock — quiet tools.  
+*Consider the ravens.* · A reminder you are not forgotten.
