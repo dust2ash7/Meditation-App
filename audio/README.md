@@ -1,6 +1,6 @@
 # Stillpoint meditation beds
 
-Looping beds for **Soft** sound when you pick Timed sit, Box breathing, or Wind-down.
+Looping beds for **Soft** sound when you pick Timed sit, Box breathing, or Wind-down. They are original Raven Flock compositions made in Aerie; the project files are in [`source/`](./source/).
 
 Licenses and source URLs: [`CREDITS.md`](./CREDITS.md).
 
@@ -12,7 +12,7 @@ Licenses and source URLs: [`CREDITS.md`](./CREDITS.md).
 | `audio/stillpoint-box.mp3` | Box breathing |
 | `audio/stillpoint-wind.mp3` | Wind-down |
 
-Also loaded as recorded beds:
+Also loaded as recorded beds (CC0 nature field recordings):
 
 | Path | Chip |
 |------|------|
@@ -21,7 +21,7 @@ Also loaded as recorded beds:
 | `audio/stillpoint-shore.mp3` | Beach |
 | `audio/stillpoint-wild.mp3` | Nature |
 
-White noise is still generated in the browser by `../sounds.js`.
+Hush (`white`) is generated in the browser by `../sounds.js`; it has no file.
 
 ## Playback
 

@@ -1,97 +1,87 @@
-# Music credits — Meditation-App / Stillpoint
+# Sound credits — Stillpoint
 
-Three distinct CC0 ambient beds for sit / box / wind modes.
-
-## stillpoint-sit.mp3
-
-| Field | Value |
-|-------|-------|
-| **Title** | First Light Particles – CC0 Atmospheric Piano/Ambient Track |
-| **Artist / Author** | Yoiyami |
-| **License** | CC0 1.0 (Public Domain Dedication) |
-| **Source URL** | https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track |
-| **Source file** | first_light_particles_1.mp3 |
-| **Local filename** | stillpoint-sit.mp3 |
-| **Notes** | Atmospheric piano/ambient. Compressed to stereo ~112 kbps MP3, loudnorm (I=-16, TP=-3), trimmed to ~90s. |
-
-## stillpoint-box.mp3
-
-| Field | Value |
-|-------|-------|
-| **Title** | The Budding of Consciousness – CC0 Ambient / Minimalist Theme (Yoiyami Blue Series – No.4) |
-| **Artist / Author** | Yoiyami |
-| **License** | CC0 1.0 (Public Domain Dedication) |
-| **Source URL** | https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4 |
-| **Source file** | the_budding_of_consciousness_.mp3 |
-| **Local filename** | stillpoint-box.mp3 |
-| **Notes** | Minimalist ambient. Compressed to stereo ~112 kbps MP3, loudnorm (I=-16, TP=-3), trimmed from ~224s to ~90s. Distinct from sit/wind. |
-
-## stillpoint-wind.mp3
-
-| Field | Value |
-|-------|-------|
-| **Title** | Cosmic Navigation (loop) |
-| **Artist / Author** | Synth-thetic |
-| **License** | CC0 1.0 (Public Domain Dedication) |
-| **Source URL** | https://opengameart.org/content/cosmic-navigation |
-| **Source file** | cosmic_navigation_loop.flac |
-| **Local filename** | stillpoint-wind.mp3 |
-| **Notes** | Calm cosmic ambient loop (~100 BPM). Converted from FLAC loop to stereo 112 kbps MP3, loudnorm (I=-16, TP=-3), trimmed to ~80s. Distinct from sit/box. |
+Stillpoint has two kinds of file beds: **original music** by Raven Flock (the Soft chip) and **CC0 nature field recordings** (Rain, Deep rain, Beach, Nature). Hush is generated in the browser by `sounds.js`, and the begin/end chimes are Web Audio sines; neither uses a file.
 
 ---
 
-## Nature + Beach (wild / shore) — added 2026-09-17
+## Originals — Raven Flock, made in Aerie
 
-# Stillpoint nature + ocean bed credits
+The three Soft beds are original compositions written for Stillpoint in [Aerie](https://github.com/dust2ash7/Aerie) and rendered by Aerie's own audio engine. No samples, loops, or free-licensed material are used. The Aerie project files are in [`source/`](./source/).
 
-UI mapping: `wild` = Nature, `shore` = Beach (ocean).  
-All source material below is **CC0 1.0** (public domain dedication). Attribution not required; credited here for transparency.
+| File | Title (ID3) | Practice | Loop | Key / mode | Project |
+|------|-------------|----------|------|------------|---------|
+| `stillpoint-sit.mp3` | Stillpoint Sit | Timed sit (4 in / 6 out) | 60 s (6 breath cycles) | D major pentatonic | `source/stillpoint-sit.aerie.json` |
+| `stillpoint-box.mp3` | Stillpoint Box | Box breathing (4-4-4-4) | 64 s (4 squares) | A minor (Aeolian) | `source/stillpoint-box.aerie.json` |
+| `stillpoint-wind.mp3` | Stillpoint Wind-down | Wind-down (4-7-8) | 76 s (4 cycles) | E♭ major, low register | `source/stillpoint-wind.aerie.json` |
+
+- **Artist:** Raven Flock. Composition in Aerie: Raven Flock Sound Design. Calm target cards, loudness spec and measurements: Raven Flock Brain Researcher.
+- **Render:** Aerie offline `renderWav` (44.1 kHz, 16-bit, stereo), exported at 3× the loop length; the middle repetition is cut sample-exact so reverb tails wrap into the loop start. Sit and Wind-down use a 500 ms crossfade built only from Aerie output to smooth the seam.
+- **Loudness:** two-pass `loudnorm` (linear gain only), −16 LUFS integrated, true peak ≤ −3.5 dBTP, LRA 1.2–2.6 LU. Seam head/tail within ±1.5 dB of the loop body.
+- **Encode:** MP3 128 kbps CBR, 44.1 kHz, joint stereo. Tags: `artist=Raven Flock`, `title=Stillpoint <Bed>`, `comment=Original composition (Aerie). Consider the ravens.`
+- Pulse-free on a 60 BPM grid; loop lengths are whole multiples of each practice's breath cycle. These are design choices, not health claims.
 
 ---
 
-## stillpoint-wild.mp3 / stillpoint-wild.ogg
+## Nature field recordings — CC0 1.0 (not Raven Flock compositions)
+
+All four are **CC0 1.0 Universal** (public domain dedication). Attribution is not required; it is given here for honesty. ID3 tags on each file name the real recordist and source.
+
+### Rain — `stillpoint-rain.mp3` (chip `rain`)
 
 | Field | Value |
-|-------|--------|
-| **Title** | Forest and Stream #1 |
-| **Artist / author** | Joseph Sardin (BigSoundBank / La Sonothèque); page also lists Pierre SIBANARCO |
+|-------|-------|
+| **Title** | Summer Rain on Terrace |
+| **Recordist** | Joseph Sardin (BigSoundBank / La Sonothèque) |
+| **Source** | BigSoundBank **#1019** — https://bigsoundbank.com/summer-rain-on-terrace-s1019.html |
 | **License** | CC0 1.0 Universal |
-| **Source URL** | https://bigsoundbank.com/forest-and-stream-1-s2713.html |
-| **Direct download used** | https://bigsoundbank.com/UPLOAD/mp3/2713.mp3 |
-| **Local filenames** | `stillpoint-wild.mp3`, `stillpoint-wild.ogg` |
-| **Description** | Field recording: small brook + birds (blackbird, etc.) in forest of Signy-l'Abbaye (Ardennes). Real nature / stream ambience. |
+| **Processing** | First 75 s; two-pass `loudnorm` (I −16, TP −3); 1.5 s fade in/out; stereo 44.1 kHz MP3 128 kbps |
 
-**Processing notes**
-- Trimmed first **75 s** of the ~5:01 source MP3.
-- `loudnorm` target **I=-16 LUFS, TP=-3 dBTP** (two-pass linear).
-- Soft **1.5 s** fade-in / fade-out for HTMLAudio looping.
-- Stereo, 44.1 kHz; MP3 **128 kbps** (libmp3lame); Ogg Vorbis **~96 kbps**.
-- Source metadata stripped; retagged for Stillpoint.
-
----
-
-## stillpoint-shore.mp3 / stillpoint-shore.ogg
+### Deep rain — `stillpoint-fall.mp3` (chip `fall`)
 
 | Field | Value |
-|-------|--------|
-| **Title** | Calm ocean waves |
-| **Artist / author** | SamsterBirdies |
+|-------|-------|
+| **Title** | Big rain on car roof |
+| **Recordist** | Joseph Sardin (BigSoundBank / La Sonothèque) |
+| **Source** | BigSoundBank **#1294** — https://bigsoundbank.com/big-rain-on-car-roof-s1294.html |
 | **License** | CC0 1.0 Universal |
-| **Source URL** | https://freesound.org/people/SamsterBirdies/sounds/578524/ |
-| **Direct download used** | https://cdn.freesound.org/previews/578/578524_5487341-hq.mp3 (Freesound HQ preview; full FLAC available on Freesound with login) |
-| **Local filenames** | `stillpoint-shore.mp3`, `stillpoint-shore.ogg` |
-| **Description** | Recording of calm ocean waves (Whidbey Island, WA); loops; real beach/ocean field recording. |
+| **Processing** | Full ~82 s; mono source to dual-mono stereo; two-pass `loudnorm` (I −16, TP −3); 1.5 s fade in/out; 44.1 kHz MP3 128 kbps |
 
-**Processing notes**
-- Trimmed first **75 s** of the ~2:59.7 HQ preview MP3.
-- `loudnorm` target **I=-16 LUFS, TP=-3 dBTP** (two-pass linear).
-- Soft **1.5 s** fade-in / fade-out for HTMLAudio looping.
-- Stereo, 44.1 kHz; MP3 **128 kbps** (libmp3lame); Ogg Vorbis **~96 kbps**.
-- Source metadata stripped; retagged for Stillpoint.
+### Beach — `stillpoint-shore.mp3` (chip `shore`)
+
+| Field | Value |
+|-------|-------|
+| **Title** | Calm ocean waves (Whidbey Island, WA) |
+| **Recordist** | SamsterBirdies |
+| **Source** | Freesound **#578524** — https://freesound.org/people/SamsterBirdies/sounds/578524/ (HQ preview) |
+| **License** | CC0 1.0 Universal |
+| **Processing** | First 75 s; two-pass `loudnorm` (I −16, TP −3); 1.5 s fade in/out; stereo 44.1 kHz MP3 128 kbps |
+
+### Nature — `stillpoint-wild.mp3` (chip `wild`)
+
+| Field | Value |
+|-------|-------|
+| **Title** | Forest and Stream #1 (brook and birds, Signy-l'Abbaye, Ardennes) |
+| **Recordist** | Joseph Sardin (BigSoundBank / La Sonothèque); the page also lists Pierre SIBANARCO |
+| **Source** | BigSoundBank **#2713** — https://bigsoundbank.com/forest-and-stream-1-s2713.html |
+| **License** | CC0 1.0 Universal |
+| **Processing** | First 75 s; two-pass `loudnorm` (I −16, TP −3); 1.5 s fade in/out; stereo 44.1 kHz MP3 128 kbps |
+
+The app plays these files from this repo only. It never streams audio from BigSoundBank, Freesound, or any other remote host.
 
 ---
 
-## Untouched (out of scope)
+## Formerly used (CC0, retired)
 
-Soft sit / box / wind MP3s and white-noise synth remain as-is; not modified by this pack.
+The Soft beds used these CC0 tracks from OpenGameArt until the Aerie originals replaced them:
 
+| File | Track | Author | Source |
+|------|-------|--------|--------|
+| `stillpoint-sit.mp3` | First Light Particles | Yoiyami | https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track |
+| `stillpoint-box.mp3` | The Budding of Consciousness (Yoiyami Blue Series No. 4) | Yoiyami | https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4 |
+| `stillpoint-wind.mp3` | Cosmic Navigation (loop) | Synth-thetic | https://opengameart.org/content/cosmic-navigation |
+
+The Ogg copies of Beach and Nature (`stillpoint-shore.ogg`, `stillpoint-wild.ogg`) were never loaded by the app and have been removed.
+
+---
+
+*Consider the ravens.*
