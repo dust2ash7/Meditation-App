@@ -1,0 +1,504 @@
+{
+ "v": 1,
+ "songId": "songsit01",
+ "title": "Stillpoint Sit",
+ "bpm": 60,
+ "timeSig": 4,
+ "key": "D",
+ "scale": "major",
+ "bars": 45,
+ "swing": 0,
+ "snap": "1/4",
+ "loop": null,
+ "follow": true,
+ "tone": "quiet",
+ "lyrics": "",
+ "sections": [],
+ "scenes": [],
+ "tracks": [
+  {
+   "id": "trk011",
+   "name": "Bowed drone",
+   "kind": "keys",
+   "preset": "pad_bow",
+   "tint": "sage",
+   "volume": 0.6,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "trail",
+   "delay": false,
+   "knobs": [
+    0.15,
+    0.0,
+    0.5
+   ],
+   "lane": [],
+   "laneOn": false
+  },
+  {
+   "id": "trk012",
+   "name": "Ensemble hold",
+   "kind": "keys",
+   "preset": "strings_ens",
+   "tint": "clay",
+   "volume": 0.95,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "trail",
+   "delay": false,
+   "knobs": [
+    0.2,
+    0.4444,
+    0.5
+   ],
+   "lane": [],
+   "laneOn": false
+  },
+  {
+   "id": "trk013",
+   "name": "Far mallet",
+   "kind": "lead",
+   "preset": "mallet",
+   "tint": "slate",
+   "volume": 0.35,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "trail",
+   "delay": false,
+   "knobs": [
+    0.2,
+    0.5,
+    0.5
+   ],
+   "lane": [],
+   "laneOn": false
+  }
+ ],
+ "clips": [
+  {
+   "id": "clip011",
+   "trackId": "trk011",
+   "name": "Bowed drone",
+   "start": 0,
+   "length": 180,
+   "content": 60,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01001",
+     "pitch": 52,
+     "start": 0.25,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01002",
+     "pitch": 38,
+     "start": 3.0,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01003",
+     "pitch": 45,
+     "start": 6.5,
+     "duration": 160.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01004",
+     "pitch": 52,
+     "start": 9.75,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01005",
+     "pitch": 38,
+     "start": 12.5,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01006",
+     "pitch": 45,
+     "start": 16.75,
+     "duration": 160.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01007",
+     "pitch": 52,
+     "start": 18.25,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01008",
+     "pitch": 38,
+     "start": 23.5,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01009",
+     "pitch": 45,
+     "start": 27.0,
+     "duration": 160.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01010",
+     "pitch": 52,
+     "start": 29.75,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01011",
+     "pitch": 38,
+     "start": 33.0,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01012",
+     "pitch": 45,
+     "start": 37.5,
+     "duration": 160.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01013",
+     "pitch": 52,
+     "start": 38.75,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01014",
+     "pitch": 38,
+     "start": 43.5,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01015",
+     "pitch": 45,
+     "start": 47.5,
+     "duration": 160.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01016",
+     "pitch": 52,
+     "start": 49.25,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01017",
+     "pitch": 38,
+     "start": 55.0,
+     "duration": 160.0,
+     "velocity": 0.4
+    },
+    {
+     "id": "n01018",
+     "pitch": 45,
+     "start": 56.25,
+     "duration": 160.0,
+     "velocity": 0.36
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "soft"
+  },
+  {
+   "id": "clip012",
+   "trackId": "trk012",
+   "name": "Ensemble hold",
+   "start": 0,
+   "length": 180,
+   "content": 60,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01019",
+     "pitch": 66,
+     "start": 2.0,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01020",
+     "pitch": 57,
+     "start": 3.25,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01021",
+     "pitch": 62,
+     "start": 6.5,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01022",
+     "pitch": 64,
+     "start": 8.75,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01023",
+     "pitch": 66,
+     "start": 11.0,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01024",
+     "pitch": 57,
+     "start": 12.0,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01025",
+     "pitch": 62,
+     "start": 15.25,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01026",
+     "pitch": 64,
+     "start": 16.5,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01027",
+     "pitch": 55,
+     "start": 20.0,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01028",
+     "pitch": 59,
+     "start": 20.25,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01029",
+     "pitch": 62,
+     "start": 20.5,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01030",
+     "pitch": 69,
+     "start": 21.0,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01031",
+     "pitch": 55,
+     "start": 28.25,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01032",
+     "pitch": 59,
+     "start": 29.0,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01033",
+     "pitch": 62,
+     "start": 30.75,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01034",
+     "pitch": 69,
+     "start": 31.5,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01035",
+     "pitch": 55,
+     "start": 35.5,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01036",
+     "pitch": 59,
+     "start": 37.75,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01037",
+     "pitch": 57,
+     "start": 40.25,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01038",
+     "pitch": 66,
+     "start": 40.5,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01039",
+     "pitch": 69,
+     "start": 42.0,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01040",
+     "pitch": 59,
+     "start": 46.5,
+     "duration": 18.001,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01041",
+     "pitch": 66,
+     "start": 48.25,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01042",
+     "pitch": 57,
+     "start": 48.5,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01043",
+     "pitch": 69,
+     "start": 50.0,
+     "duration": 20.001,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01044",
+     "pitch": 66,
+     "start": 52.75,
+     "duration": 52.003,
+     "velocity": 0.28
+    },
+    {
+     "id": "n01045",
+     "pitch": 62,
+     "start": 56.0,
+     "duration": 52.003,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01046",
+     "pitch": 66,
+     "start": 56.25,
+     "duration": 52.003,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01047",
+     "pitch": 64,
+     "start": 56.5,
+     "duration": 52.003,
+     "velocity": 0.28
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "soft"
+  },
+  {
+   "id": "clip013",
+   "trackId": "trk013",
+   "name": "Far mallet",
+   "start": 0,
+   "length": 180,
+   "content": 60,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01048",
+     "pitch": 76,
+     "start": 4.5,
+     "duration": 2.791,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01049",
+     "pitch": 69,
+     "start": 16.0,
+     "duration": 2.791,
+     "velocity": 0.25
+    },
+    {
+     "id": "n01050",
+     "pitch": 74,
+     "start": 27.5,
+     "duration": 2.791,
+     "velocity": 0.26
+    },
+    {
+     "id": "n01051",
+     "pitch": 71,
+     "start": 39.0,
+     "duration": 2.791,
+     "velocity": 0.25
+    },
+    {
+     "id": "n01052",
+     "pitch": 78,
+     "start": 50.0,
+     "duration": 2.791,
+     "velocity": 0.25
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "legato"
+  }
+ ],
+ "updatedAt": 1790800000000
+}

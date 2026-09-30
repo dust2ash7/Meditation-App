@@ -28,16 +28,16 @@ During a sitting you can pause, switch soundscapes, mute, or stop. A soft Web Au
 
 Pick a bed on the home screen or mid-sit:
 
-| Chip | What you hear |
-|------|----------------|
-| **Soft** | Mode bed in `audio/` — sit, box, or wind |
-| **White** | Filtered noise, generated in the browser |
-| **Rain** | Light rain + drips |
-| **Rainfall** | Heavier rain |
-| **Beach** | Low swell |
-| **Nature** | Low bed + occasional chirps |
+| Chip | What you hear | Source |
+|------|----------------|--------|
+| **Soft** | Mode bed for the practice: sit, box, or wind-down | Original Raven Flock music, made in Aerie (`audio/stillpoint-{sit,box,wind}.mp3`) |
+| **Hush** | Soft brown-noise bed | Generated in the browser by `sounds.js` |
+| **Rain** | Light rain on a terrace | CC0 field recording, BigSoundBank #1019 (`audio/stillpoint-rain.mp3`) |
+| **Deep rain** | Heavier, closer rain | CC0 field recording, BigSoundBank #1294 (`audio/stillpoint-fall.mp3`) |
+| **Beach** | Calm ocean waves | CC0 field recording, Freesound #578524 (`audio/stillpoint-shore.mp3`) |
+| **Nature** | Forest brook and birds | CC0 field recording, BigSoundBank #2713 (`audio/stillpoint-wild.mp3`) |
 
-Soft uses `./audio/stillpoint-sit.mp3`, `stillpoint-box.mp3`, and `stillpoint-wind.mp3`. Sources and licenses: [`audio/CREDITS.md`](./audio/CREDITS.md). Other chips are synthesized by `sounds.js`.
+All beds are files in this repo (or, for Hush, generated locally); nothing streams from a third-party host. Sources, licenses, and the Aerie project files: [`audio/CREDITS.md`](./audio/CREDITS.md).
 
 Playback starts from the **Begin** click so browsers allow it. Mute silences the bed and chimes without ending the session.
 
