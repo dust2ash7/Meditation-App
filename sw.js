@@ -1,4 +1,4 @@
-const CACHE = "stillpoint-v24";
+const CACHE = "stillpoint-v25";
 const SHELL = [
   "./",
   "./index.html",

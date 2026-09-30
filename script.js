@@ -2,7 +2,7 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  const CACHE_ID = "stillpoint-v21";
+  const CACHE_ID = "stillpoint-v25";
   const AUDIO_BY_MODE = {
     sit: "./audio/stillpoint-sit.mp3",
     box: "./audio/stillpoint-box.mp3",
@@ -14,10 +14,6 @@
     shore: "./audio/stillpoint-shore.mp3",
     rain: "./audio/stillpoint-rain.mp3",
     fall: "./audio/stillpoint-fall.mp3"
-  };
-  const AUDIO_REMOTE_FALLBACK = {
-    rain: "https://bigsoundbank.com/UPLOAD/mp3/1019.mp3",
-    fall: "https://bigsoundbank.com/UPLOAD/mp3/1294.mp3"
   };
   const SOUND_KINDS = ["soft", "white", "rain", "fall", "shore", "wild"];
   const MUSIC_VOL = 0.32;
@@ -206,10 +202,6 @@
     return audioSrcFor(type);
   }
 
-  function soundscapeFallback(soundId) {
-    return AUDIO_REMOTE_FALLBACK[soundId] || "";
-  }
-
   async function requestWakeLock() {
     if (!("wakeLock" in navigator) || typeof navigator.wakeLock.request !== "function") return;
     try {
@@ -237,7 +229,7 @@
   function lazyCacheAudio(url) {
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
-    caches.open("stillpoint-v21").then(async (cache) => {
+    caches.open(CACHE_ID).then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
       try { await cache.add(abs); } catch {}
@@ -677,10 +669,7 @@
     if (play && state.musicEnabled) {
       const p = els.soundscape.play();
       if (p && typeof p.then === "function") {
-        p.then(() => lazyCacheAudio(src)).catch(() => {
-          const remote = soundscapeFallback(state.soundId);
-          if (remote && src !== remote) applyBedAudio(remote, { reset: true, play: true });
-        });
+        p.then(() => lazyCacheAudio(src)).catch(() => {});
       } else {
         lazyCacheAudio(src);
       }
@@ -1108,7 +1097,7 @@
 
   function registerWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("./sw.js?v=21").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=25").catch(() => {});
   }
 
   function init() {
