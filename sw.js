@@ -22,7 +22,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE);
-      await cache.addAll(SHELL);
+      await cache.addAll(SHELL.map((url) => new Request(url, { cache: "reload" })));
       self.skipWaiting();
     })()
   );
@@ -46,7 +46,9 @@ self.addEventListener("fetch", (event) => {
       const cached = await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
       try {
-        const response = await fetch(request);
+        const url = new URL(request.url);
+        const bed = url.origin === self.location.origin && url.pathname.includes("/audio/");
+        const response = await fetch(bed ? new Request(request, { cache: "reload" }) : request);
         if (response && response.ok && response.status !== 206 && new URL(request.url).origin === self.location.origin) {
           const cache = await caches.open(CACHE);
           cache.put(request, response.clone());

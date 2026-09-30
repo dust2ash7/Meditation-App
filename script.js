@@ -232,7 +232,7 @@
     caches.open(CACHE_ID).then(async (cache) => {
       const hit = await cache.match(abs, { ignoreSearch: true });
       if (hit) return;
-      try { await cache.add(abs); } catch {}
+      try { await cache.add(new Request(abs, { cache: "reload" })); } catch {}
     }).catch(() => {});
   }
 
