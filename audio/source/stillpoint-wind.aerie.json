@@ -1,0 +1,364 @@
+{
+ "v": 1,
+ "songId": "songwind01",
+ "title": "Stillpoint Wind-down",
+ "bpm": 60,
+ "timeSig": 4,
+ "key": "D#",
+ "scale": "major",
+ "bars": 57,
+ "swing": 0,
+ "snap": "1/4",
+ "loop": null,
+ "follow": true,
+ "tone": "quiet",
+ "lyrics": "",
+ "sections": [],
+ "scenes": [],
+ "tracks": [
+  {
+   "id": "trk011",
+   "name": "Bowed pad",
+   "kind": "keys",
+   "preset": "pad_bow",
+   "tint": "sage",
+   "volume": 0.6,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "trail",
+   "delay": false,
+   "knobs": [
+    0.05,
+    0.0,
+    0.85
+   ],
+   "lane": [],
+   "laneOn": false
+  },
+  {
+   "id": "trk012",
+   "name": "Ensemble fifths",
+   "kind": "keys",
+   "preset": "strings_ens",
+   "tint": "clay",
+   "volume": 0.7,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "trail",
+   "delay": false,
+   "knobs": [
+    0.1,
+    0.4444,
+    0.5
+   ],
+   "lane": [],
+   "laneOn": false
+  },
+  {
+   "id": "trk013",
+   "name": "Eb pedal",
+   "kind": "keys",
+   "preset": "pad_bow",
+   "tint": "slate",
+   "volume": 0.55,
+   "pan": 0,
+   "mute": false,
+   "solo": false,
+   "eqLow": 0,
+   "eqHigh": -6,
+   "reverb": "room",
+   "delay": false,
+   "knobs": [
+    0.1,
+    0.0,
+    0.5
+   ],
+   "lane": [],
+   "laneOn": false
+  }
+ ],
+ "clips": [
+  {
+   "id": "clip011",
+   "trackId": "trk011",
+   "name": "Bowed pad",
+   "start": 0,
+   "length": 228,
+   "content": 76,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01001",
+     "pitch": 51,
+     "start": 3.25,
+     "duration": 155.0,
+     "velocity": 0.27
+    },
+    {
+     "id": "n01002",
+     "pitch": 55,
+     "start": 7.5,
+     "duration": 150.0,
+     "velocity": 0.31
+    },
+    {
+     "id": "n01003",
+     "pitch": 58,
+     "start": 13.0,
+     "duration": 157.5,
+     "velocity": 0.33
+    },
+    {
+     "id": "n01004",
+     "pitch": 51,
+     "start": 21.0,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01005",
+     "pitch": 55,
+     "start": 26.0,
+     "duration": 142.5,
+     "velocity": 0.31
+    },
+    {
+     "id": "n01006",
+     "pitch": 58,
+     "start": 31.25,
+     "duration": 172.5,
+     "velocity": 0.33
+    },
+    {
+     "id": "n01007",
+     "pitch": 51,
+     "start": 41.5,
+     "duration": 152.5,
+     "velocity": 0.31
+    },
+    {
+     "id": "n01008",
+     "pitch": 55,
+     "start": 45.75,
+     "duration": 160.0,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01009",
+     "pitch": 58,
+     "start": 51.0,
+     "duration": 147.5,
+     "velocity": 0.29
+    },
+    {
+     "id": "n01010",
+     "pitch": 51,
+     "start": 58.0,
+     "duration": 157.5,
+     "velocity": 0.33
+    },
+    {
+     "id": "n01011",
+     "pitch": 55,
+     "start": 63.25,
+     "duration": 147.5,
+     "velocity": 0.32
+    },
+    {
+     "id": "n01012",
+     "pitch": 58,
+     "start": 75.25,
+     "duration": 147.5,
+     "velocity": 0.25
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "soft"
+  },
+  {
+   "id": "clip012",
+   "trackId": "trk012",
+   "name": "Ensemble fifths",
+   "start": 0,
+   "length": 228,
+   "content": 76,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01013",
+     "pitch": 46,
+     "start": 0.0,
+     "duration": 38.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01014",
+     "pitch": 53,
+     "start": 0.0,
+     "duration": 38.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01015",
+     "pitch": 46,
+     "start": 4.75,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01016",
+     "pitch": 53,
+     "start": 10.25,
+     "duration": 36.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01017",
+     "pitch": 39,
+     "start": 18.75,
+     "duration": 40.002,
+     "velocity": 0.29
+    },
+    {
+     "id": "n01018",
+     "pitch": 46,
+     "start": 23.25,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01019",
+     "pitch": 53,
+     "start": 29.0,
+     "duration": 38.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01020",
+     "pitch": 39,
+     "start": 37.0,
+     "duration": 40.002,
+     "velocity": 0.29
+    },
+    {
+     "id": "n01021",
+     "pitch": 48,
+     "start": 38.0,
+     "duration": 39.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01022",
+     "pitch": 55,
+     "start": 38.0,
+     "duration": 40.002,
+     "velocity": 0.25
+    },
+    {
+     "id": "n01023",
+     "pitch": 48,
+     "start": 42.5,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01024",
+     "pitch": 55,
+     "start": 48.5,
+     "duration": 38.002,
+     "velocity": 0.25
+    },
+    {
+     "id": "n01025",
+     "pitch": 39,
+     "start": 55.75,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01026",
+     "pitch": 48,
+     "start": 61.0,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01027",
+     "pitch": 55,
+     "start": 67.25,
+     "duration": 40.002,
+     "velocity": 0.3
+    },
+    {
+     "id": "n01028",
+     "pitch": 39,
+     "start": 73.5,
+     "duration": 40.002,
+     "velocity": 0.26
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "soft"
+  },
+  {
+   "id": "clip013",
+   "trackId": "trk013",
+   "name": "Eb pedal",
+   "start": 0,
+   "length": 228,
+   "content": 76,
+   "loop": true,
+   "notes": [
+    {
+     "id": "n01029",
+     "pitch": 39,
+     "start": 16.5,
+     "duration": 155.0,
+     "velocity": 0.36
+    },
+    {
+     "id": "n01030",
+     "pitch": 39,
+     "start": 35.0,
+     "duration": 152.5,
+     "velocity": 0.34
+    },
+    {
+     "id": "n01031",
+     "pitch": 39,
+     "start": 53.75,
+     "duration": 175.0,
+     "velocity": 0.32
+    },
+    {
+     "id": "n01032",
+     "pitch": 39,
+     "start": 74.25,
+     "duration": 142.5,
+     "velocity": 0.27
+    }
+   ],
+   "mute": false,
+   "fadeIn": 0,
+   "fadeOut": 0,
+   "active": true,
+   "clipKind": "midi",
+   "articulation": "soft"
+  }
+ ],
+ "updatedAt": 1790800000000
+}
