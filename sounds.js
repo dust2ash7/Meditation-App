@@ -3,7 +3,6 @@
 
   const VOL = {
     white: 0.22,
-    tone: 0.045,
     rain: 0.22,
     fall: 0.26,
     shore: 0.2,
@@ -11,8 +10,6 @@
   };
 
   const FILE_KINDS = new Set(["soft", "shore", "wild", "rain", "fall"]);
-  const CARRIER_L = 200;
-  const CARRIER_R = 210;
 
   let ctx = null;
   let master = null;
@@ -99,9 +96,7 @@
   }
 
   function startWhite() {
-    const c = audioCtx();
-    const now = c.currentTime;
-
+    audioCtx();
     const src = track(sourceFrom(brownBuffer(3)));
     const lp = track(filter("lowpass", 320, 0.7));
     const noiseG = track(gain(VOL.white));
@@ -109,29 +104,6 @@
     lp.connect(noiseG);
     noiseG.connect(master);
     src.start();
-
-    const lfo = track(c.createOscillator());
-    const lfoG = track(gain(VOL.white * 0.12));
-    lfo.type = "sine";
-    lfo.frequency.value = 10;
-    lfo.connect(lfoG);
-    lfoG.connect(noiseG.gain);
-    lfo.start(now);
-
-    const merge = track(c.createChannelMerger(2));
-    const toneG = track(gain(VOL.tone));
-    const left = track(c.createOscillator());
-    const right = track(c.createOscillator());
-    left.type = "sine";
-    right.type = "sine";
-    left.frequency.value = CARRIER_L;
-    right.frequency.value = CARRIER_R;
-    left.connect(merge, 0, 0);
-    right.connect(merge, 0, 1);
-    merge.connect(toneG);
-    toneG.connect(master);
-    left.start(now);
-    right.start(now);
   }
 
   function setOutput(vol, mute) {
