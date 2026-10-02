@@ -2,7 +2,7 @@
   "use strict";
 
   const VOL = {
-    white: 0.22,
+    white: 0.20,
     rain: 0.22,
     fall: 0.26,
     shore: 0.2,
@@ -97,7 +97,7 @@
 
   function startWhite() {
     audioCtx();
-    const src = track(sourceFrom(brownBuffer(3)));
+    const src = track(sourceFrom(brownBuffer(20)));
     const lp = track(filter("lowpass", 320, 0.7));
     const noiseG = track(gain(VOL.white));
     src.connect(lp);
