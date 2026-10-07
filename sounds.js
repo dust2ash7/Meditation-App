@@ -174,9 +174,10 @@
     },
     getKind() { return kind; },
     setEnabled(on) {
+      // Only stops. Starting is the page's job (setKind/start on Begin or gesture); restarting
+      // here re-launched Hush under a file bed on every mute/unmute.
       enabled = Boolean(on);
       if (!enabled) stopAll();
-      else if (!FILE_KINDS.has(kind)) start(kind);
     },
     setMuted(on) {
       muted = Boolean(on);
