@@ -2,7 +2,7 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  const CACHE_ID = "stillpoint-v25";
+  const CACHE_ID = "stillpoint-v26";
   const AUDIO_BY_MODE = {
     sit: "./audio/stillpoint-sit.mp3",
     box: "./audio/stillpoint-box.mp3",
@@ -230,7 +230,7 @@
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
     caches.open(CACHE_ID).then(async (cache) => {
-      const hit = await cache.match(abs, { ignoreSearch: true });
+      const hit = await cache.match(abs, { ignoreSearch: true, ignoreVary: true });
       if (hit) return;
       try { await cache.add(new Request(abs, { cache: "reload" })); } catch {}
     }).catch(() => {});
@@ -1097,7 +1097,7 @@
 
   function registerWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("./sw.js?v=25").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=26").catch(() => {});
   }
 
   function init() {
