@@ -2,7 +2,7 @@
   "use strict";
 
   const STORAGE_KEY = "stillpoint-v1";
-  const CACHE_ID = "stillpoint-v26";
+  const CACHE_ID = "stillpoint-v27";
   const AUDIO_BY_MODE = {
     sit: "./audio/stillpoint-sit.mp3",
     box: "./audio/stillpoint-box.mp3",
@@ -418,7 +418,7 @@
 
   const SOUND_LABELS = {
     soft: "Soft",
-    white: "White",
+    white: "Hush",
     rain: "Rain",
     fall: "Deep rain",
     shore: "Beach",
@@ -468,7 +468,8 @@
       }
       return;
     }
-    if (e) e.stop();
+    // Tell the engine the current kind is a file bed (stops the synth and keeps its kind in sync).
+    if (e) e.setKind(state.soundId);
     // soft → mode beds; rain/fall/wild/shore → recorded file beds (mirror Soft HTMLAudio path)
     applyBedAudio(soundscapeSrcFor(state.soundId, state.type), { reset, play });
   }
@@ -1097,7 +1098,7 @@
 
   function registerWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("./sw.js?v=26").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=27").catch(() => {});
   }
 
   function init() {

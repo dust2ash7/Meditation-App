@@ -2,8 +2,7 @@
   "use strict";
 
   const VOL = {
-    white: 0.22,
-    tone: 0.045,
+    white: 0.20,
     rain: 0.22,
     fall: 0.26,
     shore: 0.2,
@@ -11,8 +10,6 @@
   };
 
   const FILE_KINDS = new Set(["soft", "shore", "wild", "rain", "fall"]);
-  const CARRIER_L = 200;
-  const CARRIER_R = 210;
 
   let ctx = null;
   let master = null;
@@ -22,6 +19,11 @@
   let muted = false;
   let enabled = true;
   let running = false;
+  let voiceOut = null;
+  let brownCache = null;
+
+  // Fade the outgoing voice over ~40 ms on the audio clock before stopping it (no hard cut).
+  const STOP_RAMP_S = 0.04;
 
   function audioCtx() {
     const C = window.AudioContext || window.webkitAudioContext;
@@ -36,8 +38,11 @@
     return ctx;
   }
 
+  // The 20 s brown buffer takes 30-40 ms of main-thread work to fill, so build it once per
+  // AudioContext and reuse it on every start.
   function brownBuffer(seconds) {
     const c = audioCtx();
+    if (brownCache && brownCache.ctx === c && brownCache.seconds === seconds) return brownCache.buf;
     const n = Math.floor(c.sampleRate * seconds);
     const buf = c.createBuffer(1, n, c.sampleRate);
     const data = buf.getChannelData(0);
@@ -54,6 +59,7 @@
     }
     const scale = 0.9 / peak;
     for (let i = 0; i < n; i += 1) data[i] *= scale;
+    brownCache = { ctx: c, seconds, buf };
     return buf;
   }
 
@@ -83,10 +89,8 @@
     return node;
   }
 
-  function stopAll() {
-    timers.forEach((id) => clearTimeout(id));
-    timers = [];
-    nodes.forEach((node) => {
+  function hardStop(list) {
+    list.forEach((node) => {
       try {
         if (node.stop) node.stop();
       } catch {}
@@ -94,44 +98,48 @@
         node.disconnect();
       } catch {}
     });
+  }
+
+  function stopAll() {
+    timers.forEach((id) => clearTimeout(id));
+    timers = [];
+    const old = nodes;
+    const out = voiceOut;
     nodes = [];
+    voiceOut = null;
     running = false;
+    if (!old.length) return;
+    if (!ctx || ctx.state !== "running" || !out) {
+      hardStop(old);
+      return;
+    }
+    const now = ctx.currentTime;
+    const end = now + STOP_RAMP_S;
+    try {
+      out.gain.cancelScheduledValues(now);
+      out.gain.setValueAtTime(out.gain.value, now);
+      out.gain.linearRampToValueAtTime(0, end);
+    } catch {}
+    old.forEach((node) => {
+      try {
+        if (node.stop) node.stop(end + 0.01);
+      } catch {}
+    });
+    // Disconnect after the ramp and the scheduled stop have run (not tracked in timers,
+    // so a following start()/stopAll() can't cancel the cleanup).
+    setTimeout(() => hardStop(old), Math.ceil((STOP_RAMP_S + 0.08) * 1000));
   }
 
   function startWhite() {
-    const c = audioCtx();
-    const now = c.currentTime;
-
-    const src = track(sourceFrom(brownBuffer(3)));
+    audioCtx();
+    const src = track(sourceFrom(brownBuffer(20)));
     const lp = track(filter("lowpass", 320, 0.7));
     const noiseG = track(gain(VOL.white));
+    voiceOut = noiseG;
     src.connect(lp);
     lp.connect(noiseG);
     noiseG.connect(master);
     src.start();
-
-    const lfo = track(c.createOscillator());
-    const lfoG = track(gain(VOL.white * 0.12));
-    lfo.type = "sine";
-    lfo.frequency.value = 10;
-    lfo.connect(lfoG);
-    lfoG.connect(noiseG.gain);
-    lfo.start(now);
-
-    const merge = track(c.createChannelMerger(2));
-    const toneG = track(gain(VOL.tone));
-    const left = track(c.createOscillator());
-    const right = track(c.createOscillator());
-    left.type = "sine";
-    right.type = "sine";
-    left.frequency.value = CARRIER_L;
-    right.frequency.value = CARRIER_R;
-    left.connect(merge, 0, 0);
-    right.connect(merge, 0, 1);
-    merge.connect(toneG);
-    toneG.connect(master);
-    left.start(now);
-    right.start(now);
   }
 
   function setOutput(vol, mute) {
@@ -166,9 +174,10 @@
     },
     getKind() { return kind; },
     setEnabled(on) {
+      // Only stops. Starting is the page's job (setKind/start on Begin or gesture); restarting
+      // here re-launched Hush under a file bed on every mute/unmute.
       enabled = Boolean(on);
       if (!enabled) stopAll();
-      else if (!FILE_KINDS.has(kind)) start(kind);
     },
     setMuted(on) {
       muted = Boolean(on);
