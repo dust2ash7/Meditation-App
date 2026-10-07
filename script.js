@@ -230,7 +230,7 @@
     if (!url || !("caches" in window)) return;
     const abs = new URL(url, window.location.href).href;
     caches.open(CACHE_ID).then(async (cache) => {
-      const hit = await cache.match(abs, { ignoreSearch: true });
+      const hit = await cache.match(abs, { ignoreSearch: true, ignoreVary: true });
       if (hit) return;
       try { await cache.add(new Request(abs, { cache: "reload" })); } catch {}
     }).catch(() => {});
